@@ -82,8 +82,11 @@
   --sidebar-accent-foreground: #f4f4f5;
   --sidebar-border: rgb(255 255 255 / 10%);
   --sidebar-ring: rgb(255 255 255 / 35%);
-  --mirror-glow: rgb(180 210 255 / 8%);
-  --mirror-edge: rgb(255 255 255 / 4%);
+  --mirror-glow: rgb(90 180 200 / 14%);
+  --mirror-edge: rgb(255 220 170 / 6%);
+  --mirror-aurora-a: rgb(45 140 155 / 28%);
+  --mirror-aurora-b: rgb(70 110 170 / 22%);
+  --mirror-aurora-c: rgb(180 130 70 / 14%);
 }
 
 .dark {
@@ -126,13 +129,80 @@
   }
 
   body {
-    @apply min-h-dvh text-foreground;
-    background:
-      radial-gradient(120% 80% at 50% -10%, var(--mirror-glow), transparent 55%),
-      radial-gradient(70% 50% at 100% 100%, var(--mirror-edge), transparent 50%),
-      radial-gradient(60% 40% at 0% 90%, rgb(120 160 200 / 5%), transparent 45%),
-      #000000;
+    @apply min-h-dvh bg-black text-foreground;
   }
+}
+
+.mirror-sky {
+  background:
+    radial-gradient(90% 70% at 50% 0%, rgb(18 28 42 / 90%), transparent 60%),
+    radial-gradient(60% 50% at 80% 20%, rgb(22 40 52 / 70%), transparent 55%),
+    linear-gradient(180deg, #05070c 0%, #020305 55%, #000 100%);
+}
+
+.mirror-aurora {
+  filter: blur(72px);
+  mix-blend-mode: screen;
+  will-change: transform, opacity;
+}
+
+.mirror-aurora-a {
+  background: radial-gradient(circle, var(--mirror-aurora-a), transparent 68%);
+  animation: mirror-drift-a 22s ease-in-out infinite alternate;
+}
+
+.mirror-aurora-b {
+  background: radial-gradient(circle, var(--mirror-aurora-b), transparent 68%);
+  animation: mirror-drift-b 28s ease-in-out infinite alternate;
+}
+
+.mirror-aurora-c {
+  background: radial-gradient(circle, var(--mirror-aurora-c), transparent 70%);
+  animation: mirror-drift-c 26s ease-in-out infinite alternate;
+}
+
+.mirror-stars {
+  background-image:
+    radial-gradient(1px 1px at 12% 18%, rgb(255 255 255 / 55%), transparent),
+    radial-gradient(1px 1px at 28% 42%, rgb(255 255 255 / 35%), transparent),
+    radial-gradient(1.5px 1.5px at 63% 22%, rgb(255 255 255 / 45%), transparent),
+    radial-gradient(1px 1px at 78% 58%, rgb(255 255 255 / 30%), transparent),
+    radial-gradient(1px 1px at 41% 72%, rgb(255 255 255 / 40%), transparent),
+    radial-gradient(1.5px 1.5px at 88% 14%, rgb(255 255 255 / 50%), transparent),
+    radial-gradient(1px 1px at 8% 64%, rgb(255 255 255 / 25%), transparent),
+    radial-gradient(1px 1px at 52% 8%, rgb(255 255 255 / 40%), transparent);
+  animation: mirror-twinkle 8s ease-in-out infinite;
+}
+
+.mirror-grain {
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.55'/%3E%3C/svg%3E");
+  background-size: 180px 180px;
+  mix-blend-mode: soft-light;
+}
+
+.mirror-eq span {
+  display: block;
+  width: 2px;
+  height: 30%;
+  background: rgb(255 255 255 / 35%);
+  border-radius: 999px;
+}
+
+.mirror-eq.is-active span {
+  background: rgb(94 234 212 / 85%);
+  animation: mirror-eq 0.9s ease-in-out infinite;
+}
+
+.mirror-eq.is-active span:nth-child(2) {
+  animation-delay: 0.12s;
+}
+
+.mirror-eq.is-active span:nth-child(3) {
+  animation-delay: 0.24s;
+}
+
+.mirror-eq.is-active span:nth-child(4) {
+  animation-delay: 0.36s;
 }
 
 @utility font-display {
@@ -157,6 +227,59 @@
   }
   50% {
     opacity: 0.82;
+  }
+}
+
+@keyframes mirror-drift-a {
+  from {
+    transform: translate3d(0, 0, 0) scale(1);
+    opacity: 0.55;
+  }
+  to {
+    transform: translate3d(8%, 12%, 0) scale(1.15);
+    opacity: 0.85;
+  }
+}
+
+@keyframes mirror-drift-b {
+  from {
+    transform: translate3d(0, 0, 0) scale(1.05);
+    opacity: 0.45;
+  }
+  to {
+    transform: translate3d(-10%, 8%, 0) scale(1.2);
+    opacity: 0.75;
+  }
+}
+
+@keyframes mirror-drift-c {
+  from {
+    transform: translate3d(0, 0, 0) scale(1);
+    opacity: 0.35;
+  }
+  to {
+    transform: translate3d(6%, -10%, 0) scale(1.18);
+    opacity: 0.65;
+  }
+}
+
+@keyframes mirror-twinkle {
+  0%,
+  100% {
+    opacity: 0.55;
+  }
+  50% {
+    opacity: 0.85;
+  }
+}
+
+@keyframes mirror-eq {
+  0%,
+  100% {
+    height: 25%;
+  }
+  50% {
+    height: 100%;
   }
 }
 
@@ -185,7 +308,12 @@
   .mirror-fade-in-delay-1,
   .mirror-fade-in-delay-2,
   .mirror-fade-in-delay-3,
-  .mirror-pulse {
+  .mirror-pulse,
+  .mirror-aurora-a,
+  .mirror-aurora-b,
+  .mirror-aurora-c,
+  .mirror-stars,
+  .mirror-eq.is-active span {
     animation: none;
   }
 }

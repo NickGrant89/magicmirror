@@ -1,6 +1,6 @@
 # Magic Mirror
 
-Full-bleed black smart-mirror dashboard for a wall display: large clock, upcoming calendar, reminders, Blink doorbell, crypto (BTC / VET / XRP in USDT + GBP), weather, and next-event countdown.
+Full-bleed smart-mirror dashboard for a wall display: large clock, upcoming calendar, reminders, Blink doorbell, Capital XTRA radio, crypto (BTC / VET / XRP in USDT + GBP), weather, and next-event countdown — on an animated night-sky background.
 
 ## Run locally
 
@@ -25,6 +25,7 @@ npm start
 | Clock | Live (browser local time) |
 | Weather | Live via [Open-Meteo](https://open-meteo.com/) (no key). Override location with `MIRROR_*` env vars. Falls back to mock if the API fails. |
 | Crypto | Live via [CoinGecko](https://www.coingecko.com/) public API (USD treated as USDT). Falls back to mock if rate-limited/offline. |
+| Radio | Live [Capital XTRA](https://www.capitalxtra.com/) stream (play/pause). Override with `NEXT_PUBLIC_RADIO_*`. |
 | Calendar | Mock + CalDAV config hook |
 | Reminders | Mock + Apple config hook |
 | Blink doorbell | Mock + Blink config hook |
@@ -41,6 +42,7 @@ cp .env.example .env.local
 - **Apple Calendar / Reminders:** `APPLE_CALDAV_URL`, `APPLE_ID`, `APPLE_APP_PASSWORD`
 - **Blink:** `BLINK_EMAIL`, `BLINK_PASSWORD`, optional `BLINK_CLIENT_ID`
 - **Weather location:** `MIRROR_LATITUDE`, `MIRROR_LONGITUDE`, `MIRROR_LOCATION_LABEL`
+- **Radio:** `NEXT_PUBLIC_RADIO_STREAM_URL`, `NEXT_PUBLIC_RADIO_STATION_NAME`, `NEXT_PUBLIC_RADIO_STATION_TAGLINE`
 
 API route handlers under `src/app/api/*` check these env vars and are ready for live clients; until wired, polished mocks keep the UI usable.
 

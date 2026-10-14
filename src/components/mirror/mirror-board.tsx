@@ -4,7 +4,9 @@ import { CalendarPanel } from "@/components/mirror/calendar-panel";
 import { Clock } from "@/components/mirror/clock";
 import { CryptoPanel } from "@/components/mirror/crypto-panel";
 import { DoorbellPanel } from "@/components/mirror/doorbell-panel";
+import { MirrorAtmosphere } from "@/components/mirror/mirror-atmosphere";
 import { NextEventCountdown } from "@/components/mirror/countdown";
+import { RadioPanel } from "@/components/mirror/radio-panel";
 import { TasksPanel } from "@/components/mirror/tasks-panel";
 import { WeatherPanel } from "@/components/mirror/weather-panel";
 import { usePollingJson } from "@/hooks/use-polling-json";
@@ -25,16 +27,18 @@ export function MirrorBoard() {
 
   return (
     <div className="relative flex min-h-dvh flex-col px-6 py-8 text-white md:px-12 md:py-10 lg:px-16">
-      <header className="flex items-end justify-between gap-6">
-        <p className="font-display text-sm tracking-[0.35em] text-white/55 uppercase">
+      <MirrorAtmosphere />
+
+      <header className="relative z-10 flex items-end justify-between gap-6">
+        <p className="font-display text-sm tracking-[0.35em] text-white/70 uppercase">
           Magic Mirror
         </p>
-        <p className="hidden text-xs tracking-[0.2em] text-white/25 uppercase sm:block">
+        <p className="hidden text-xs tracking-[0.2em] text-white/35 uppercase sm:block">
           Wall display
         </p>
       </header>
 
-      <main className="mx-auto flex w-full max-w-6xl flex-1 flex-col justify-center gap-12 py-10 lg:gap-16">
+      <main className="relative z-10 mx-auto flex w-full max-w-6xl flex-1 flex-col justify-center gap-12 py-10 lg:gap-16">
         <Clock />
 
         <div className="grid gap-10 md:grid-cols-2 md:gap-12 lg:grid-cols-[1.1fr_0.9fr] lg:gap-16">
@@ -58,6 +62,7 @@ export function MirrorBoard() {
               loading={weather.loading}
               error={weather.error}
             />
+            <RadioPanel />
             <DoorbellPanel
               data={blink.data}
               loading={blink.loading}
