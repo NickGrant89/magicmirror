@@ -18,11 +18,42 @@ npm run build
 npm start
 ```
 
-## Raspberry Pi 9″ kiosk
+## Use on a Raspberry Pi (9″ screen)
 
-Layout is locked to one viewport (`100dvh`, no page scroll) with denser type for short landscape panels.
+Layout is locked to one viewport for ~1024×600 / 1280×720 landscape panels.
 
-Example Chromium kiosk on the Pi (after `npm start` or reverse-proxy):
+### 1. Put Node on the Pi
+
+Raspberry Pi OS (Bookworm+) example:
+
+```bash
+curl -fsSL https://deb.nodesource.com/setup_22.x | sudo -E bash -
+sudo apt-get install -y nodejs
+node -v   # should be 20+
+```
+
+### 2. Get this project onto the Pi
+
+Clone your repo (after you create/push one), or copy the folder over with `scp`/`rsync`:
+
+```bash
+git clone <your-repo-url> magic-mirror
+cd magic-mirror
+git checkout cursor/magic-mirror-dashboard-a8ca   # if needed
+```
+
+### 3. Install, build, run (production)
+
+```bash
+npm install
+cp .env.example .env.local   # optional — set weather lat/lon, etc.
+npm run build
+npm start
+```
+
+App listens on **http://127.0.0.1:43127**.
+
+### 4. Open fullscreen (kiosk)
 
 ```bash
 chromium-browser --kiosk --noerrdialogs --disable-infobars \
@@ -30,10 +61,25 @@ chromium-browser --kiosk --noerrdialogs --disable-infobars \
   http://127.0.0.1:43127
 ```
 
+On some Pi OS builds the binary is `chromium` instead of `chromium-browser`.
+
+### 5. Optional: start on boot
+
+Create two systemd units (or one script): one for `npm start`, one for Chromium kiosk after the network is up. Simplest manual pattern after login:
+
+```bash
+# terminal 1
+cd ~/magic-mirror && npm start
+
+# terminal 2
+chromium-browser --kiosk http://127.0.0.1:43127
+```
+
 Tips:
-- Prefer landscape orientation at the panel’s native resolution
-- Use `npm start` (production) on the Pi for lower CPU than `next dev`
-- Touch targets on radio are large enough for a finger tap
+- Set the display to **landscape** at the panel’s native resolution
+- Prefer `npm start` over `npm run dev` on the Pi (less CPU)
+- Tap **Capital XTRA** to play radio; weather/crypto need internet
+- Calendar / reminders / Blink stay mock until you fill `.env.local`
 
 ## What’s live vs mock
 
