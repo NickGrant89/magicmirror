@@ -82,11 +82,11 @@
   --sidebar-accent-foreground: #f4f4f5;
   --sidebar-border: rgb(255 255 255 / 10%);
   --sidebar-ring: rgb(255 255 255 / 35%);
-  --mirror-glow: rgb(90 180 200 / 14%);
-  --mirror-edge: rgb(255 220 170 / 6%);
-  --mirror-aurora-a: rgb(45 140 155 / 28%);
-  --mirror-aurora-b: rgb(70 110 170 / 22%);
-  --mirror-aurora-c: rgb(180 130 70 / 14%);
+  --mirror-glow: rgb(90 180 200 / 22%);
+  --mirror-edge: rgb(255 220 170 / 10%);
+  --mirror-aurora-a: rgb(55 170 185 / 42%);
+  --mirror-aurora-b: rgb(80 130 200 / 34%);
+  --mirror-aurora-c: rgb(200 145 75 / 22%);
 }
 
 .dark {
@@ -141,9 +141,10 @@
 }
 
 .mirror-aurora {
-  filter: blur(72px);
+  filter: blur(64px);
   mix-blend-mode: screen;
   will-change: transform, opacity;
+  opacity: 0.9;
 }
 
 .mirror-aurora-a {

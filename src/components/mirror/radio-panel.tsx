@@ -26,7 +26,7 @@ export function RadioPanel() {
   useEffect(() => {
     const audio = new Audio();
     audio.preload = "none";
-    audio.crossOrigin = "anonymous";
+    // No crossOrigin — Global's Icecast mounts don't send CORS headers.
     audioRef.current = audio;
 
     const onPlaying = () => {
