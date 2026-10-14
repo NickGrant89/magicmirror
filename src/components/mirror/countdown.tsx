@@ -18,9 +18,18 @@ function getServerSnapshot() {
   return 0;
 }
 
-export function NextEventCountdown({ events }: { events: CalendarEvent[] }) {
+export function NextEventCountdown({
+  events,
+  compact = false,
+}: {
+  events: CalendarEvent[];
+  compact?: boolean;
+}) {
   const tick = useSyncExternalStore(subscribe, getSnapshot, getServerSnapshot);
-  const now = tick > 0 ? new Date(tick * 30_000) : null;
+  const now = useMemo(
+    () => (tick > 0 ? new Date(tick * 30_000) : null),
+    [tick],
+  );
 
   const next = useMemo(() => {
     if (!now) return undefined;
@@ -35,8 +44,8 @@ export function NextEventCountdown({ events }: { events: CalendarEvent[] }) {
   if (!now) {
     return (
       <section className="mirror-fade-in-delay-1" aria-hidden>
-        <SectionLabel>Up next</SectionLabel>
-        <div className="h-12 w-40 rounded bg-white/5" />
+        <SectionLabel compact={compact}>Up next</SectionLabel>
+        <div className={compact ? "h-8 w-28 rounded bg-white/5" : "h-12 w-40 rounded bg-white/5"} />
       </section>
     );
   }
@@ -44,26 +53,41 @@ export function NextEventCountdown({ events }: { events: CalendarEvent[] }) {
   if (!next) {
     return (
       <section className="mirror-fade-in-delay-1">
-        <SectionLabel>Up next</SectionLabel>
-        <p className="font-display text-3xl text-white/80 md:text-4xl">
+        <SectionLabel compact={compact}>Up next</SectionLabel>
+        <p
+          className={
+            compact
+              ? "font-display text-xl text-white/80"
+              : "font-display text-3xl text-white/80 md:text-4xl"
+          }
+        >
           Clear schedule
         </p>
-        <p className="mt-2 text-sm text-white/40">No upcoming events</p>
       </section>
     );
   }
 
   return (
     <section className="mirror-fade-in-delay-1">
-      <SectionLabel>Up next</SectionLabel>
-      <p className="mirror-pulse font-display text-[clamp(2.4rem,5vw,3.6rem)] leading-none tracking-tight text-white">
+      <SectionLabel compact={compact}>Up next</SectionLabel>
+      <p
+        className={
+          compact
+            ? "mirror-pulse font-display text-[clamp(1.6rem,4vw,2.2rem)] leading-none tracking-tight text-white"
+            : "mirror-pulse font-display text-[clamp(2.4rem,5vw,3.6rem)] leading-none tracking-tight text-white"
+        }
+      >
         {formatCountdown(next.startsAt, now)}
       </p>
-      <p className="mt-3 text-lg text-white/85 md:text-xl">{next.title}</p>
-      <p className="mt-1 text-sm text-white/45">
-        {formatEventTime(next.startsAt, next.allDay)}
-        {next.location ? ` · ${next.location}` : ""}
+      <p className={compact ? "mt-1 truncate text-sm text-white/85" : "mt-3 text-lg text-white/85 md:text-xl"}>
+        {next.title}
       </p>
+      {!compact ? (
+        <p className="mt-1 text-sm text-white/45">
+          {formatEventTime(next.startsAt, next.allDay)}
+          {next.location ? ` · ${next.location}` : ""}
+        </p>
+      ) : null}
     </section>
   );
 }

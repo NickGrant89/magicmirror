@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Manrope, Syne } from "next/font/google";
 import "./globals.css";
 
@@ -15,7 +15,15 @@ const syne = Syne({
 export const metadata: Metadata = {
   title: "Magic Mirror",
   description:
-    "Full-bleed smart mirror dashboard — clock, calendar, tasks, doorbell, crypto, and weather.",
+    "Full-bleed smart mirror for a 9″ Raspberry Pi display — clock, calendar, tasks, doorbell, crypto, radio, and weather.",
+};
+
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 1,
+  userScalable: false,
+  themeColor: "#000000",
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
@@ -24,7 +32,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       lang="en"
       className={`dark ${manrope.variable} ${syne.variable} h-full antialiased`}
     >
-      <body className="min-h-full font-sans">{children}</body>
+      <body className="h-full overflow-hidden font-sans">{children}</body>
     </html>
   );
 }

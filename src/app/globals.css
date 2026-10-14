@@ -129,7 +129,36 @@
   }
 
   body {
-    @apply min-h-dvh bg-black text-foreground;
+    @apply min-h-dvh overflow-hidden bg-black text-foreground;
+  }
+}
+
+/* 9″ Raspberry Pi panels are typically ~1024×600 / 1280×720 landscape */
+@media (max-height: 720px) {
+  .mirror-aurora {
+    filter: blur(36px);
+    opacity: 0.75;
+  }
+
+  .mirror-aurora-a,
+  .mirror-aurora-b,
+  .mirror-aurora-c {
+    animation-duration: 40s;
+  }
+
+  .mirror-stars {
+    animation: none;
+    opacity: 0.55;
+  }
+
+  .mirror-footnote {
+    display: none;
+  }
+}
+
+@media (max-height: 600px) {
+  .mirror-shell {
+    font-size: 0.95rem;
   }
 }
 

@@ -1,6 +1,21 @@
-export function SectionLabel({ children }: { children: React.ReactNode }) {
+import { cn } from "@/lib/utils";
+
+export function SectionLabel({
+  children,
+  compact,
+}: {
+  children: React.ReactNode;
+  compact?: boolean;
+}) {
   return (
-    <p className="mirror-label mb-3 text-[0.7rem] font-medium uppercase tracking-[0.28em] text-white/45">
+    <p
+      className={cn(
+        "mirror-label font-medium uppercase text-white/45",
+        compact
+          ? "mb-1 text-[0.58rem] tracking-[0.22em]"
+          : "mb-3 text-[0.7rem] tracking-[0.28em]",
+      )}
+    >
       {children}
     </p>
   );

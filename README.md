@@ -1,6 +1,6 @@
 # Magic Mirror
 
-Full-bleed smart-mirror dashboard for a wall display: large clock, upcoming calendar, reminders, Blink doorbell, Capital XTRA radio, crypto (BTC / VET / XRP in USDT + GBP), weather, and next-event countdown — on an animated night-sky background.
+Full-bleed smart-mirror dashboard tuned for a **9″ Raspberry Pi landscape screen** (~1024×600 / 1280×720): large clock, upcoming calendar, reminders, Blink doorbell, Capital XTRA radio, crypto (BTC / VET / XRP in USDT + GBP), weather, and next-event countdown — on an animated night-sky background.
 
 ## Run locally
 
@@ -11,12 +11,29 @@ npm run dev
 
 Open [http://127.0.0.1:43127](http://127.0.0.1:43127).
 
-Production-style:
+Production-style (recommended on the Pi):
 
 ```bash
 npm run build
 npm start
 ```
+
+## Raspberry Pi 9″ kiosk
+
+Layout is locked to one viewport (`100dvh`, no page scroll) with denser type for short landscape panels.
+
+Example Chromium kiosk on the Pi (after `npm start` or reverse-proxy):
+
+```bash
+chromium-browser --kiosk --noerrdialogs --disable-infobars \
+  --check-for-update-interval=31536000 \
+  http://127.0.0.1:43127
+```
+
+Tips:
+- Prefer landscape orientation at the panel’s native resolution
+- Use `npm start` (production) on the Pi for lower CPU than `next dev`
+- Touch targets on radio are large enough for a finger tap
 
 ## What’s live vs mock
 

@@ -26,55 +26,68 @@ export function MirrorBoard() {
   const weather = usePollingJson<WeatherPayload>("/api/weather", 15 * 60_000);
 
   return (
-    <div className="relative flex min-h-dvh flex-col px-6 py-8 text-white md:px-12 md:py-10 lg:px-16">
+    <div className="mirror-shell relative flex h-dvh max-h-dvh flex-col overflow-hidden px-3 py-2 text-white sm:px-4 sm:py-3 md:px-5 md:py-3">
       <MirrorAtmosphere />
 
-      <header className="relative z-10 flex items-end justify-between gap-6">
-        <p className="font-display text-sm tracking-[0.35em] text-white/70 uppercase">
+      <header className="relative z-10 flex shrink-0 items-center justify-between gap-3">
+        <p className="font-display text-[0.65rem] tracking-[0.28em] text-white/70 uppercase sm:text-xs sm:tracking-[0.32em]">
           Magic Mirror
         </p>
-        <p className="hidden text-xs tracking-[0.2em] text-white/35 uppercase sm:block">
-          Wall display
+        <p className="text-[0.6rem] tracking-[0.16em] text-white/35 uppercase">
+          9″ Pi
         </p>
       </header>
 
-      <main className="relative z-10 mx-auto flex w-full max-w-6xl flex-1 flex-col justify-center gap-12 py-10 lg:gap-16">
-        <Clock />
-
-        <div className="grid gap-10 md:grid-cols-2 md:gap-12 lg:grid-cols-[1.1fr_0.9fr] lg:gap-16">
-          <div className="space-y-10 lg:space-y-12">
-            <NextEventCountdown events={calendar.data?.events ?? []} />
-            <CalendarPanel
-              data={calendar.data}
-              loading={calendar.loading}
-              error={calendar.error}
-            />
-            <TasksPanel
-              data={tasks.data}
-              loading={tasks.loading}
-              error={tasks.error}
-            />
-          </div>
-
-          <div className="space-y-10 lg:space-y-12">
+      <main className="relative z-10 mx-auto grid min-h-0 w-full max-w-6xl flex-1 grid-rows-[auto_minmax(0,1fr)] gap-2 py-1 sm:gap-2.5">
+        <section className="grid shrink-0 items-center gap-2 sm:grid-cols-[1.25fr_1fr] sm:gap-3">
+          <Clock />
+          <div className="grid grid-cols-2 gap-2 sm:grid-cols-1 sm:gap-2">
             <WeatherPanel
               data={weather.data}
               loading={weather.loading}
               error={weather.error}
+              compact
             />
-            <RadioPanel />
+            <NextEventCountdown
+              events={calendar.data?.events ?? []}
+              compact
+            />
+          </div>
+        </section>
+
+        <section className="grid min-h-0 grid-cols-2 gap-2 overflow-hidden sm:grid-cols-3 sm:gap-3">
+          <div className="min-h-0 overflow-y-auto overscroll-contain pr-0.5">
+            <CalendarPanel
+              data={calendar.data}
+              loading={calendar.loading}
+              error={calendar.error}
+              compact
+            />
+          </div>
+          <div className="min-h-0 space-y-2 overflow-y-auto overscroll-contain pr-0.5 sm:space-y-2.5">
+            <TasksPanel
+              data={tasks.data}
+              loading={tasks.loading}
+              error={tasks.error}
+              compact
+            />
             <DoorbellPanel
               data={blink.data}
               loading={blink.loading}
               error={blink.error}
+              compact
             />
+          </div>
+          <div className="col-span-2 min-h-0 space-y-2 overflow-y-auto overscroll-contain pr-0.5 sm:col-span-1 sm:space-y-2.5">
+            <RadioPanel compact />
             <CryptoPanel
               data={crypto.data}
               loading={crypto.loading}
               error={crypto.error}
+              compact
             />
           </div>
-        </div>
+        </section>
       </main>
     </div>
   );

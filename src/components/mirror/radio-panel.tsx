@@ -15,7 +15,7 @@ const STATION_NAME =
 const STATION_TAGLINE =
   process.env.NEXT_PUBLIC_RADIO_STATION_TAGLINE ?? "UK · Hip-Hop & R&B";
 
-export function RadioPanel() {
+export function RadioPanel({ compact = false }: { compact?: boolean }) {
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const [playing, setPlaying] = useState(false);
   const [status, setStatus] = useState<"idle" | "loading" | "live" | "error">(
@@ -68,13 +68,16 @@ export function RadioPanel() {
 
   return (
     <section className="mirror-fade-in-delay-2">
-      <SectionLabel>Radio</SectionLabel>
+      <SectionLabel compact={compact}>Radio</SectionLabel>
       <button
         type="button"
         data-testid="capital-xtra-toggle"
         onClick={() => void toggle()}
         className={cn(
-          "flex w-full items-center gap-4 rounded-2xl border border-white/10 bg-white/[0.03] px-4 py-4 text-left transition hover:bg-white/[0.06] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal-300/40",
+          "flex w-full items-center text-left transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal-300/40",
+          compact
+            ? "gap-3 rounded-xl border border-white/10 bg-white/[0.03] px-3 py-2.5 hover:bg-white/[0.06]"
+            : "gap-4 rounded-2xl border border-white/10 bg-white/[0.03] px-4 py-4 hover:bg-white/[0.06]",
           status === "live" && "border-teal-300/35 bg-teal-400/10",
           status === "loading" && "border-white/25 bg-white/10",
           status === "error" && "border-rose-300/30 bg-rose-400/10",
@@ -82,37 +85,58 @@ export function RadioPanel() {
       >
         <span
           className={cn(
-            "inline-flex size-14 shrink-0 items-center justify-center rounded-full border border-white/20 bg-white/5 text-white",
+            "inline-flex shrink-0 items-center justify-center rounded-full border border-white/20 bg-white/5 text-white",
+            compact ? "size-10" : "size-14",
             status === "live" && "border-teal-300/50 bg-teal-400/15",
           )}
         >
           {playing || status === "live" ? (
-            <Pause className="size-6" />
+            <Pause className={compact ? "size-4" : "size-6"} />
           ) : (
-            <Play className="size-6 translate-x-0.5" />
+            <Play
+              className={
+                compact ? "size-4 translate-x-px" : "size-6 translate-x-0.5"
+              }
+            />
           )}
         </span>
 
         <span className="min-w-0 flex-1">
-          <span className="flex items-center gap-2">
-            <Radio className="size-4 text-teal-300/80" aria-hidden />
-            <span className="font-display text-2xl tracking-tight text-white md:text-3xl">
+          <span className="flex items-center gap-1.5">
+            <Radio
+              className={cn(
+                "text-teal-300/80",
+                compact ? "size-3.5" : "size-4",
+              )}
+              aria-hidden
+            />
+            <span
+              className={
+                compact
+                  ? "truncate font-display text-base tracking-tight text-white"
+                  : "font-display text-2xl tracking-tight text-white md:text-3xl"
+              }
+            >
               {STATION_NAME}
             </span>
           </span>
-          <span className="mt-1 block text-sm text-white/45">
-            {STATION_TAGLINE}
-          </span>
-          <span className="mt-3 flex items-center gap-3">
+          {!compact ? (
+            <span className="mt-1 block text-sm text-white/45">
+              {STATION_TAGLINE}
+            </span>
+          ) : null}
+          <span className={cn("flex items-center gap-2", compact ? "mt-1" : "mt-3")}>
             <Equalizer active={status === "live"} />
-            <span className="text-xs tracking-[0.18em] text-white/40 uppercase">
+            <span className="text-[0.65rem] tracking-[0.16em] text-white/40 uppercase sm:text-xs sm:tracking-[0.18em]">
               {status === "live"
                 ? "On air"
                 : status === "loading"
                   ? "Tuning…"
                   : status === "error"
                     ? "Stream unavailable"
-                    : "Ready — press to play"}
+                    : compact
+                      ? "Press to play"
+                      : "Ready — press to play"}
             </span>
           </span>
         </span>
