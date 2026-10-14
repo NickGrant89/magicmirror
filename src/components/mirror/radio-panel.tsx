@@ -2,7 +2,6 @@
 
 import { Pause, Play, Radio } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
-import { Button } from "@/components/ui/button";
 import { SectionLabel } from "@/components/mirror/section-label";
 import { cn } from "@/lib/utils";
 
@@ -24,9 +23,8 @@ export function RadioPanel() {
   );
 
   useEffect(() => {
-    const audio = new Audio();
+    const audio = document.createElement("audio");
     audio.preload = "none";
-    // No crossOrigin — Global's Icecast mounts don't send CORS headers.
     audioRef.current = audio;
 
     const onPlaying = () => {
@@ -59,9 +57,12 @@ export function RadioPanel() {
 
   async function toggle() {
     const audio = audioRef.current;
-    if (!audio) return;
+    if (!audio) {
+      setStatus("error");
+      return;
+    }
 
-    if (playing) {
+    if (!audio.paused && !audio.ended) {
       audio.pause();
       setPlaying(false);
       setStatus("idle");
@@ -70,9 +71,10 @@ export function RadioPanel() {
 
     try {
       setStatus("loading");
-      // Re-set src on each play so the stream reconnects cleanly.
       audio.src = DEFAULT_STREAM;
       await audio.play();
+      setPlaying(true);
+      setStatus("live");
     } catch {
       setPlaying(false);
       setStatus("error");
@@ -83,14 +85,12 @@ export function RadioPanel() {
     <section className="mirror-fade-in-delay-2">
       <SectionLabel>Radio</SectionLabel>
       <div className="flex items-center gap-4">
-        <Button
+        <button
           type="button"
-          variant="outline"
-          size="icon-lg"
           onClick={() => void toggle()}
           aria-label={playing ? `Pause ${STATION_NAME}` : `Play ${STATION_NAME}`}
           className={cn(
-            "size-14 shrink-0 rounded-full border-white/20 bg-white/5 text-white hover:bg-white/10",
+            "inline-flex size-14 shrink-0 items-center justify-center rounded-full border border-white/20 bg-white/5 text-white transition hover:bg-white/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/40",
             playing && "border-teal-300/40 bg-teal-400/10",
           )}
         >
@@ -99,7 +99,7 @@ export function RadioPanel() {
           ) : (
             <Play className="size-6 translate-x-0.5" />
           )}
-        </Button>
+        </button>
 
         <div className="min-w-0 flex-1">
           <div className="flex items-center gap-2">
@@ -130,7 +130,10 @@ export function RadioPanel() {
 function Equalizer({ active }: { active: boolean }) {
   return (
     <span
-      className={cn("mirror-eq inline-flex h-3 items-end gap-0.5", active && "is-active")}
+      className={cn(
+        "mirror-eq inline-flex h-3 items-end gap-0.5",
+        active && "is-active",
+      )}
       aria-hidden
     >
       <span />
