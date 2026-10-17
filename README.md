@@ -42,24 +42,25 @@ cd magic-mirror
 git checkout cursor/magic-mirror-dashboard-a8ca   # if needed
 ```
 
-### 3. Full update + run on the Pi (recommended)
+### 3. AFTER EVERY UPDATE (copy-paste)
 
-Do this whenever you get a new `magic_mirror_for_mac.zip`.
+Do these two blocks whenever you get a new `magic_mirror_for_mac.zip`.
 
-**A. On your Mac — copy the zip to the Pi**
+**A. On your Mac — send the zip**
 
 ```bash
 scp "/Users/Nick/Library/Application Support/Cursor/AgentStores/cursor_agent_stores/bc-49af559d-8e32-415f-8dc0-796abe65ea0f/files/artifacts/magic_mirror_for_mac.zip" nick@192.168.1.144:~/
 ```
 
-(Change the Pi hostname/IP if yours is different.)
+(Change IP if your Pi is not `192.168.1.144`.)
 
-**B. On the Pi — replace the app and rebuild**
+**B. On the Pi — one-shot update** (SSH session)
 
 ```bash
 # stop old mirror + browser
 sudo fuser -k 43127/tcp 2>/dev/null
 sudo pkill -9 -f "next start" 2>/dev/null
+sudo pkill -9 -f "next-server" 2>/dev/null
 pkill -9 chromium 2>/dev/null
 pkill -9 chromium-browser 2>/dev/null
 
@@ -71,14 +72,17 @@ rm -rf ~/node_modules ~/.next
 cd ~
 rm -rf magic-mirror
 unzip -o magic_mirror_for_mac.zip -d magic-mirror
-cd magic-mirror
+# flatten nested folder if zip contains magic_mirror_for_mac/
+if [ -d ~/magic-mirror/magic_mirror_for_mac ]; then
+  mv ~/magic-mirror/magic_mirror_for_mac/* ~/magic-mirror/
+  rmdir ~/magic-mirror/magic_mirror_for_mac
+fi
+cd ~/magic-mirror
 pwd
 # must show: /home/nick/magic-mirror
 
-# prove new files are there
-ls src/components/mirror/guest-wifi-card.tsx
-ls src/components/mirror/photo-frame.tsx
-grep "v5" src/components/mirror/mirror-board.tsx
+# prove this is the new build (expect: v7 speaker)
+grep "Pi ·" src/components/mirror/mirror-board.tsx
 
 # build + start
 node -v          # need v20+
@@ -90,15 +94,22 @@ npm start
 
 Leave that terminal open. App listens on **http://127.0.0.1:43127**.
 
-**C. Open fullscreen on the Pi desktop** (VNC or local keyboard — not plain SSH without DISPLAY):
+**Or** after the zip is in `~/`, run the helper (same steps):
+
+```bash
+# first time only — after unzip, or copy the script over:
+# bash ~/magic-mirror/scripts/update-from-zip.sh
+```
+
+**C. Open fullscreen** (second terminal / VNC — needs a desktop `DISPLAY`):
 
 ```bash
 DISPLAY=:0 chromium-browser --kiosk --new-window http://127.0.0.1:43127
 ```
 
-Top-right should say **`9″ Pi · v5`**. If it still says v3/v4, the old process is still running — repeat the kill steps.
+Top-right should say **`9″ Pi · v7 speaker`**. If it shows an older tag, the old process is still running — repeat the kill steps.
 
-**D. Restart later**
+**D. Restart later (no new zip)**
 
 ```bash
 sudo fuser -k 43127/tcp
