@@ -88,3 +88,15 @@ export type PhotosPayload = {
   photos: AlbumPhoto[];
   note?: string;
 };
+
+export type BluetoothPayload = {
+  source: DataSource;
+  available: boolean;
+  connected: boolean;
+  deviceName: string | null;
+  deviceAddress: string | null;
+  sinkName: string | null;
+  volumePct: number;
+  muted: boolean;
+  note?: string;
+};

@@ -170,6 +170,7 @@ Tips:
 | Radio | Live [Capital XTRA](https://www.capitalxtra.com/) stream (play/pause). Override with `NEXT_PUBLIC_RADIO_*`. |
 | Guest Wi‑Fi | Live QR + SSID/password card (`DIGI-Guest` by default). Override with `NEXT_PUBLIC_WIFI_*`. |
 | Photo frame | Mock slideshow by default. Live via public **iCloud Shared Album** (`APPLE_SHARED_ALBUM_TOKEN` / URL). |
+| Bluetooth speaker | Status + volume on the Pi (`pactl` / `bluetoothctl`). Pair once in Pi OS, set `BLUETOOTH_SPEAKER_MAC`. |
 | Calendar | Mock + CalDAV config hook |
 | Reminders | Mock + Apple config hook |
 | Blink doorbell | Mock + Blink config hook |
@@ -189,6 +190,7 @@ cp .env.example .env.local
 - **Weather location:** `MIRROR_LATITUDE`, `MIRROR_LONGITUDE`, `MIRROR_LOCATION_LABEL`
 - **Radio:** `NEXT_PUBLIC_RADIO_STREAM_URL`, `NEXT_PUBLIC_RADIO_STATION_NAME`, `NEXT_PUBLIC_RADIO_STATION_TAGLINE`
 - **Guest Wi‑Fi:** `NEXT_PUBLIC_WIFI_SSID`, `NEXT_PUBLIC_WIFI_PASSWORD`, `NEXT_PUBLIC_WIFI_SECURITY`, `NEXT_PUBLIC_WIFI_LABEL`
+- **Bluetooth speaker:** Pair in Pi Bluetooth settings first, then set `BLUETOOTH_SPEAKER_MAC` (from `bluetoothctl devices`) and optional `BLUETOOTH_SPEAKER_NAME`. Mirror **Connect** / volume buttons call `bluetoothctl` + `pactl`.
 
 API route handlers under `src/app/api/*` check these env vars and are ready for live clients; until wired, polished mocks keep the UI usable.
 

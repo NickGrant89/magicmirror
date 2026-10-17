@@ -8,6 +8,7 @@ import { MirrorAtmosphere } from "@/components/mirror/mirror-atmosphere";
 import { NextEventCountdown } from "@/components/mirror/countdown";
 import { PhotoFrame } from "@/components/mirror/photo-frame";
 import { RadioPanel } from "@/components/mirror/radio-panel";
+import { SpeakerPanel } from "@/components/mirror/speaker-panel";
 import { TasksPanel } from "@/components/mirror/tasks-panel";
 import { WeatherPanel } from "@/components/mirror/weather-panel";
 import { usePollingJson } from "@/hooks/use-polling-json";
@@ -33,7 +34,7 @@ export function MirrorBoard() {
           Magic Mirror
         </p>
         <p className="text-[0.6rem] tracking-[0.18em] text-white/30 uppercase">
-          9″ Pi · v5
+          9″ Pi · v6 bt
         </p>
       </header>
 
@@ -77,6 +78,7 @@ export function MirrorBoard() {
               compact
             />
             <RadioPanel compact />
+            <SpeakerPanel compact />
           </div>
 
           <div className="flex min-h-0 flex-col justify-start gap-4 overflow-hidden border-white/10 sm:border-l sm:pl-4">
