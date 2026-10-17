@@ -4,6 +4,7 @@ import { CalendarPanel } from "@/components/mirror/calendar-panel";
 import { Clock } from "@/components/mirror/clock";
 import { CryptoPanel } from "@/components/mirror/crypto-panel";
 import { DoorbellPanel } from "@/components/mirror/doorbell-panel";
+import { GuestWifiCard } from "@/components/mirror/guest-wifi-card";
 import { MirrorAtmosphere } from "@/components/mirror/mirror-atmosphere";
 import { NextEventCountdown } from "@/components/mirror/countdown";
 import { RadioPanel } from "@/components/mirror/radio-panel";
@@ -79,6 +80,7 @@ export function MirrorBoard() {
             />
           </div>
           <div className="col-span-2 min-h-0 space-y-2 overflow-y-auto overscroll-contain pr-0.5 sm:col-span-1 sm:space-y-2.5">
+            <GuestWifiCard compact />
             <RadioPanel compact />
             <CryptoPanel
               data={crypto.data}
