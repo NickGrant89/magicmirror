@@ -42,18 +42,55 @@ cd magic-mirror
 git checkout cursor/magic-mirror-dashboard-a8ca   # if needed
 ```
 
-### 3. Install, build, run (production)
+### 3. Recommended: build on Mac, run on Pi
+
+Next.js builds often **run out of memory** on a Pi. Build on your Mac, then copy the folder over.
+
+**On your Mac** (unzipped project folder):
 
 ```bash
+cd ~/Projects/magic-mirror   # or wherever you unzipped
+node -v                      # need 20+ (22 is ideal)
 npm install
-cp .env.example .env.local   # optional — set weather lat/lon, etc.
 npm run build
+```
+
+Copy the whole folder to the Pi (includes `.next`):
+
+```bash
+rsync -av --exclude node_modules ./ pi@raspberrypi.local:~/magic-mirror/
+```
+
+**On the Pi:**
+
+```bash
+cd ~/magic-mirror
+node -v                      # need 20+
+npm install --omit=dev
 npm start
 ```
 
 App listens on **http://127.0.0.1:43127**.
 
-### 4. Open fullscreen (kiosk)
+### 4. If you insist on building on the Pi
+
+```bash
+node -v   # must be v20+ — not the old apt node 12/16/18
+npm install
+NODE_OPTIONS=--max-old-space-size=2048 npm run build
+npm start
+```
+
+Add swap if the build is killed (`Killed` / exit `137`):
+
+```bash
+sudo fallocate -l 2G /swapfile
+sudo chmod 600 /swapfile
+sudo mkswap /swapfile
+sudo swapon /swapfile
+```
+
+### 5. Open fullscreen (kiosk)
 
 ```bash
 chromium-browser --kiosk --noerrdialogs --disable-infobars \
@@ -63,9 +100,7 @@ chromium-browser --kiosk --noerrdialogs --disable-infobars \
 
 On some Pi OS builds the binary is `chromium` instead of `chromium-browser`.
 
-### 5. Optional: start on boot
-
-Create two systemd units (or one script): one for `npm start`, one for Chromium kiosk after the network is up. Simplest manual pattern after login:
+### 6. Optional: start on boot
 
 ```bash
 # terminal 1
@@ -75,11 +110,20 @@ cd ~/magic-mirror && npm start
 chromium-browser --kiosk http://127.0.0.1:43127
 ```
 
+### Pi troubleshooting
+
+| Symptom | Fix |
+| --- | --- |
+| `node: not found` / old Node | Install Node 22 (Nodesource) — Next 16 needs **20+** |
+| `npm run build` → `Killed` / 137 | Out of RAM — build on Mac instead, or add 2G swap |
+| `next: not found` | Run `npm install` inside the project folder first |
+| Unzip leaves files in home | `mkdir magic-mirror && unzip … -d magic-mirror && cd magic-mirror` |
+| Port in use | `lsof -i :43127` then stop the other process |
+
 Tips:
-- Set the display to **landscape** at the panel’s native resolution
-- Prefer `npm start` over `npm run dev` on the Pi (less CPU)
-- Tap **Capital XTRA** to play radio; weather/crypto need internet
-- Calendar / reminders / Blink stay mock until you fill `.env.local`
+- Landscape at the panel’s native resolution
+- Never use `npm run dev` on the Pi for daily use
+- Weather/crypto/radio need internet; calendar/Blink stay mock until configured
 
 ## What’s live vs mock
 
