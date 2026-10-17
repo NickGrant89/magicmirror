@@ -27,7 +27,7 @@ export function CalendarPanel({
       ) : events.length === 0 ? (
         <p className="text-sm text-white/40">No upcoming events</p>
       ) : (
-        <ul className={compact ? "space-y-2" : "space-y-4"}>
+        <ul className={compact ? "space-y-2.5" : "space-y-4"}>
           {events.map((event) => (
             <li key={event.id} className="min-w-0">
               <div className="flex items-baseline justify-between gap-2">

@@ -25,22 +25,23 @@ export function MirrorBoard() {
   const weather = usePollingJson<WeatherPayload>("/api/weather", 15 * 60_000);
 
   return (
-    <div className="mirror-shell relative flex h-dvh max-h-dvh flex-col overflow-hidden px-3 py-1.5 text-white sm:px-4 sm:py-2">
+    <div className="mirror-shell relative flex h-dvh max-h-dvh flex-col overflow-hidden px-4 py-3 text-white md:px-6 md:py-4">
       <MirrorAtmosphere />
 
-      <header className="relative z-10 flex shrink-0 items-center justify-between gap-3">
-        <p className="font-display text-[0.65rem] tracking-[0.28em] text-white/70 uppercase sm:text-xs sm:tracking-[0.32em]">
+      <header className="relative z-10 mb-2 flex shrink-0 items-center justify-between gap-3">
+        <p className="font-display text-[0.7rem] tracking-[0.32em] text-white/65 uppercase">
           Magic Mirror
         </p>
-        <p className="text-[0.6rem] tracking-[0.16em] text-white/35 uppercase">
-          9″ Pi · v4 no-scroll
+        <p className="text-[0.6rem] tracking-[0.18em] text-white/30 uppercase">
+          9″ Pi · v5 layout
         </p>
       </header>
 
-      <main className="relative z-10 mx-auto grid min-h-0 w-full max-w-6xl flex-1 grid-rows-[auto_minmax(0,1fr)] gap-1.5 overflow-hidden py-1">
-        <section className="grid shrink-0 items-center gap-2 sm:grid-cols-[1.25fr_1fr] sm:gap-3">
+      <main className="relative z-10 mx-auto flex min-h-0 w-full max-w-6xl flex-1 flex-col gap-4 overflow-hidden">
+        {/* Top: time + glanceables */}
+        <section className="grid shrink-0 grid-cols-1 items-end gap-4 sm:grid-cols-[1.35fr_1fr]">
           <Clock />
-          <div className="grid grid-cols-2 gap-2 sm:grid-cols-1 sm:gap-1.5">
+          <div className="grid grid-cols-2 gap-4 border-l border-white/10 pl-0 sm:pl-5">
             <WeatherPanel
               data={weather.data}
               loading={weather.loading}
@@ -54,12 +55,15 @@ export function MirrorBoard() {
           </div>
         </section>
 
-        <section className="grid min-h-0 grid-cols-2 gap-2 overflow-hidden sm:grid-cols-3 sm:gap-2.5">
-          <div className="flex min-h-0 flex-col overflow-hidden">
+        <div className="h-px w-full shrink-0 bg-gradient-to-r from-transparent via-white/15 to-transparent" />
+
+        {/* Bottom: photo | schedule | utilities */}
+        <section className="grid min-h-0 flex-1 grid-cols-1 gap-4 overflow-hidden sm:grid-cols-[1.15fr_0.95fr_1fr]">
+          <div className="min-h-0 overflow-hidden">
             <PhotoFrame compact />
           </div>
 
-          <div className="flex min-h-0 flex-col gap-1.5 overflow-hidden">
+          <div className="flex min-h-0 flex-col justify-start gap-5 overflow-hidden border-white/10 sm:border-l sm:pl-4">
             <CalendarPanel
               data={calendar.data}
               loading={calendar.loading}
@@ -74,7 +78,7 @@ export function MirrorBoard() {
             />
           </div>
 
-          <div className="col-span-2 flex min-h-0 flex-col justify-between gap-1.5 overflow-hidden sm:col-span-1">
+          <div className="flex min-h-0 flex-col justify-start gap-3 overflow-hidden border-white/10 sm:border-l sm:pl-4">
             <GuestWifiCard compact />
             <RadioPanel compact />
             <CryptoPanel

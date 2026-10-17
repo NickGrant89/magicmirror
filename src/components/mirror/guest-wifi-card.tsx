@@ -34,14 +34,13 @@ export function GuestWifiCard({ compact = false }: { compact?: boolean }) {
 
       <div
         className={cn(
-          "guest-wifi-card flex items-stretch overflow-hidden rounded-2xl bg-white text-zinc-900 shadow-[0_0_0_1px_rgb(255_255_255_/_8%),0_18px_40px_rgb(0_0_0_/_35%)]",
-          compact ? "gap-0" : "gap-0",
+          "guest-wifi-card flex items-stretch overflow-hidden rounded-xl bg-white text-zinc-900 shadow-[0_0_0_1px_rgb(255_255_255_/_8%),0_12px_28px_rgb(0_0_0_/_30%)]",
         )}
       >
         <div
           className={cn(
             "flex shrink-0 items-center justify-center bg-white",
-            compact ? "p-1.5" : "p-4",
+            compact ? "p-2" : "p-4",
           )}
         >
           {qrDataUrl ? (

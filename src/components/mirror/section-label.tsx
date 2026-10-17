@@ -12,7 +12,7 @@ export function SectionLabel({
       className={cn(
         "mirror-label font-medium uppercase text-white/45",
         compact
-          ? "mb-1 text-[0.58rem] tracking-[0.22em]"
+          ? "mb-1.5 text-[0.6rem] tracking-[0.24em]"
           : "mb-3 text-[0.7rem] tracking-[0.28em]",
       )}
     >

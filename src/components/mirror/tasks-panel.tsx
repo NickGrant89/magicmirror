@@ -27,7 +27,7 @@ export function TasksPanel({
       ) : tasks.length === 0 ? (
         <p className="text-sm text-white/40">All clear</p>
       ) : (
-        <ul className={compact ? "space-y-1.5" : "space-y-3"}>
+        <ul className={compact ? "space-y-2" : "space-y-3"}>
           {tasks.map((task) => (
             <li key={task.id} className="flex items-start gap-2">
               <span
