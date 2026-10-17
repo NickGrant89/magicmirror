@@ -73,8 +73,8 @@ export function NextEventCountdown({
       <p
         className={
           compact
-            ? "mirror-pulse font-display text-[clamp(1.6rem,4vw,2.2rem)] leading-none tracking-tight text-white"
-            : "mirror-pulse font-display text-[clamp(2.4rem,5vw,3.6rem)] leading-none tracking-tight text-white"
+            ? "font-display text-[clamp(1.6rem,4vw,2.2rem)] leading-none tracking-tight text-white"
+            : "font-display text-[clamp(2.4rem,5vw,3.6rem)] leading-none tracking-tight text-white"
         }
       >
         {formatCountdown(next.startsAt, now)}

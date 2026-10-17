@@ -76,7 +76,7 @@ export function RadioPanel({ compact = false }: { compact?: boolean }) {
         className={cn(
           "flex w-full items-center text-left transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal-300/40",
           compact
-            ? "gap-3 rounded-xl border border-white/10 bg-white/[0.03] px-3 py-2.5 hover:bg-white/[0.06]"
+            ? "gap-2 rounded-xl border border-white/10 bg-white/[0.03] px-2.5 py-1.5 hover:bg-white/[0.06]"
             : "gap-4 rounded-2xl border border-white/10 bg-white/[0.03] px-4 py-4 hover:bg-white/[0.06]",
           status === "live" && "border-teal-300/35 bg-teal-400/10",
           status === "loading" && "border-white/25 bg-white/10",
@@ -86,7 +86,7 @@ export function RadioPanel({ compact = false }: { compact?: boolean }) {
         <span
           className={cn(
             "inline-flex shrink-0 items-center justify-center rounded-full border border-white/20 bg-white/5 text-white",
-            compact ? "size-10" : "size-14",
+            compact ? "size-8" : "size-14",
             status === "live" && "border-teal-300/50 bg-teal-400/15",
           )}
         >

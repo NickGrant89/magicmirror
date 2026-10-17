@@ -25,20 +25,20 @@ export function CryptoPanel({
       ) : error && !data ? (
         <p className="text-sm text-white/50">Markets unavailable</p>
       ) : (
-        <ul className={compact ? "space-y-1.5" : "space-y-3"}>
+        <ul className={compact ? "space-y-1" : "space-y-3"}>
           {quotes.map((quote) => (
             <li
               key={quote.symbol}
               className={
                 compact
-                  ? "grid grid-cols-[2.6rem_1fr_auto] items-baseline gap-2"
+                  ? "grid grid-cols-[2.4rem_1fr_auto] items-baseline gap-1.5"
                   : "grid grid-cols-[3.5rem_1fr_auto] items-baseline gap-3"
               }
             >
               <span
                 className={
                   compact
-                    ? "font-display text-sm text-white"
+                    ? "font-display text-xs text-white"
                     : "font-display text-xl text-white"
                 }
               >
@@ -48,7 +48,7 @@ export function CryptoPanel({
                 <p
                   className={
                     compact
-                      ? "truncate text-xs text-white/85 tabular-nums"
+                      ? "truncate text-[0.7rem] text-white/85 tabular-nums"
                       : "truncate text-base text-white/85 tabular-nums"
                   }
                 >
@@ -58,14 +58,10 @@ export function CryptoPanel({
                   <p className="truncate text-sm text-white/40 tabular-nums">
                     {formatMoney(quote.gbp, "GBP")}
                   </p>
-                ) : (
-                  <p className="truncate text-[0.65rem] text-white/40 tabular-nums">
-                    {formatMoney(quote.gbp, "GBP")}
-                  </p>
-                )}
+                ) : null}
               </div>
               <span
-                className={`tabular-nums ${compact ? "text-[0.7rem]" : "text-sm"} ${
+                className={`tabular-nums ${compact ? "text-[0.65rem]" : "text-sm"} ${
                   (quote.change24hPct ?? 0) >= 0
                     ? "text-emerald-300/80"
                     : "text-rose-300/80"

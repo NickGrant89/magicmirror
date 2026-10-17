@@ -131,6 +131,18 @@
   body {
     @apply min-h-dvh overflow-hidden bg-black text-foreground;
   }
+
+  .mirror-shell,
+  .mirror-shell * {
+    scrollbar-width: none;
+  }
+
+  .mirror-shell::-webkit-scrollbar,
+  .mirror-shell *::-webkit-scrollbar {
+    display: none;
+    width: 0;
+    height: 0;
+  }
 }
 
 /* 9″ Raspberry Pi panels are typically ~1024×600 / 1280×720 landscape */

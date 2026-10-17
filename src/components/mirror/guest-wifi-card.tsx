@@ -17,7 +17,7 @@ export function GuestWifiCard({ compact = false }: { compact?: boolean }) {
     void QRCode.toDataURL(payload, {
       errorCorrectionLevel: "M",
       margin: 1,
-      width: compact ? 128 : 180,
+      width: compact ? 96 : 180,
       color: { dark: "#0a0a0a", light: "#ffffff" },
     }).then((url) => {
       if (!cancelled) setQrDataUrl(url);
@@ -41,7 +41,7 @@ export function GuestWifiCard({ compact = false }: { compact?: boolean }) {
         <div
           className={cn(
             "flex shrink-0 items-center justify-center bg-white",
-            compact ? "p-2.5" : "p-4",
+            compact ? "p-1.5" : "p-4",
           )}
         >
           {qrDataUrl ? (
@@ -51,14 +51,14 @@ export function GuestWifiCard({ compact = false }: { compact?: boolean }) {
               alt={`QR code to join ${ssid}`}
               className={cn(
                 "rounded-md",
-                compact ? "size-[4.5rem]" : "size-[7.5rem]",
+                compact ? "size-[3.4rem]" : "size-[7.5rem]",
               )}
             />
           ) : (
             <div
               className={cn(
-                "animate-pulse rounded-md bg-zinc-100",
-                compact ? "size-[4.5rem]" : "size-[7.5rem]",
+                "rounded-md bg-zinc-100",
+                compact ? "size-[3.4rem]" : "size-[7.5rem]",
               )}
             />
           )}
@@ -72,14 +72,14 @@ export function GuestWifiCard({ compact = false }: { compact?: boolean }) {
         <div
           className={cn(
             "flex min-w-0 flex-1 flex-col justify-center",
-            compact ? "gap-2 px-3 py-2.5" : "gap-3 px-5 py-4",
+            compact ? "gap-1 px-2.5 py-1.5" : "gap-3 px-5 py-4",
           )}
         >
           <div>
             <p
               className={cn(
                 "font-medium tracking-[0.14em] text-zinc-400 uppercase",
-                compact ? "text-[0.55rem]" : "text-[0.65rem]",
+                compact ? "text-[0.5rem]" : "text-[0.65rem]",
               )}
             >
               SSID
@@ -87,7 +87,7 @@ export function GuestWifiCard({ compact = false }: { compact?: boolean }) {
             <p
               className={cn(
                 "truncate font-display font-semibold tracking-tight text-zinc-900",
-                compact ? "text-sm" : "text-xl",
+                compact ? "text-xs" : "text-xl",
               )}
             >
               {ssid}
@@ -97,7 +97,7 @@ export function GuestWifiCard({ compact = false }: { compact?: boolean }) {
             <p
               className={cn(
                 "font-medium tracking-[0.14em] text-zinc-400 uppercase",
-                compact ? "text-[0.55rem]" : "text-[0.65rem]",
+                compact ? "text-[0.5rem]" : "text-[0.65rem]",
               )}
             >
               Password
@@ -105,7 +105,7 @@ export function GuestWifiCard({ compact = false }: { compact?: boolean }) {
             <p
               className={cn(
                 "truncate font-display font-semibold tracking-tight text-zinc-900 tabular-nums",
-                compact ? "text-sm" : "text-xl",
+                compact ? "text-xs" : "text-xl",
               )}
             >
               {password}

@@ -15,7 +15,7 @@ export function TasksPanel({
   error: string | null;
   compact?: boolean;
 }) {
-  const tasks = (data?.tasks ?? []).slice(0, compact ? 3 : 5);
+  const tasks = (data?.tasks ?? []).slice(0, compact ? 2 : 5);
 
   return (
     <section className="mirror-fade-in-delay-3">

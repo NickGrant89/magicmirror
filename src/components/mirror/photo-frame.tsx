@@ -48,7 +48,7 @@ export function PhotoFrame({ compact = false }: { compact?: boolean }) {
       <div
         className={cn(
           "relative min-h-0 flex-1 overflow-hidden rounded-2xl border border-white/10 bg-black/40 shadow-[inset_0_0_0_1px_rgb(255_255_255_/_4%)]",
-          compact ? "min-h-[9.5rem]" : "min-h-[14rem]",
+          compact ? "min-h-0" : "min-h-[14rem]",
         )}
       >
         {loading && !data ? (
