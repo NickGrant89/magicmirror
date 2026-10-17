@@ -34,7 +34,7 @@ export function MirrorBoard() {
           Magic Mirror
         </p>
         <p className="text-[0.6rem] tracking-[0.18em] text-white/30 uppercase">
-          9″ Pi · v6 bt
+          9″ Pi · v7 speaker
         </p>
       </header>
 
@@ -78,7 +78,6 @@ export function MirrorBoard() {
               compact
             />
             <RadioPanel compact />
-            <SpeakerPanel compact />
           </div>
 
           <div className="flex min-h-0 flex-col justify-start gap-4 overflow-hidden border-white/10 sm:border-l sm:pl-4">
@@ -89,6 +88,7 @@ export function MirrorBoard() {
               error={crypto.error}
               compact
             />
+            <SpeakerPanel compact />
           </div>
         </section>
       </main>
