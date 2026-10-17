@@ -42,35 +42,70 @@ cd magic-mirror
 git checkout cursor/magic-mirror-dashboard-a8ca   # if needed
 ```
 
-### 3. Recommended: build on Mac, run on Pi
+### 3. Full update + run on the Pi (recommended)
 
-Next.js builds often **run out of memory** on a Pi. Build on your Mac, then copy the folder over.
+Do this whenever you get a new `magic_mirror_for_mac.zip`.
 
-**On your Mac** (unzipped project folder):
+**A. On your Mac — copy the zip to the Pi**
 
 ```bash
-cd ~/Projects/magic-mirror   # or wherever you unzipped
-node -v                      # need 20+ (22 is ideal)
+scp "/Users/Nick/Library/Application Support/Cursor/AgentStores/cursor_agent_stores/bc-49af559d-8e32-415f-8dc0-796abe65ea0f/files/artifacts/magic_mirror_for_mac.zip" nick@192.168.1.144:~/
+```
+
+(Change the Pi hostname/IP if yours is different.)
+
+**B. On the Pi — replace the app and rebuild**
+
+```bash
+# stop old mirror + browser
+sudo fuser -k 43127/tcp 2>/dev/null
+sudo pkill -9 -f "next start" 2>/dev/null
+pkill -9 chromium 2>/dev/null
+pkill -9 chromium-browser 2>/dev/null
+
+# clean leftover junk from earlier mistakes
+rm -f ~/package.json ~/package-lock.json
+rm -rf ~/node_modules ~/.next
+
+# install fresh copy
+cd ~
+rm -rf magic-mirror
+unzip -o magic_mirror_for_mac.zip -d magic-mirror
+cd magic-mirror
+pwd
+# must show: /home/nick/magic-mirror
+
+# prove new files are there
+ls src/components/mirror/guest-wifi-card.tsx
+ls src/components/mirror/photo-frame.tsx
+grep "v5" src/components/mirror/mirror-board.tsx
+
+# build + start
+node -v          # need v20+
 npm install
+rm -rf .next
 npm run build
-```
-
-Copy the whole folder to the Pi (includes `.next`):
-
-```bash
-rsync -av --exclude node_modules ./ pi@raspberrypi.local:~/magic-mirror/
-```
-
-**On the Pi:**
-
-```bash
-cd ~/magic-mirror
-node -v                      # need 20+
-npm install --omit=dev
 npm start
 ```
 
-App listens on **http://127.0.0.1:43127**.
+Leave that terminal open. App listens on **http://127.0.0.1:43127**.
+
+**C. Open fullscreen on the Pi desktop** (VNC or local keyboard — not plain SSH without DISPLAY):
+
+```bash
+DISPLAY=:0 chromium-browser --kiosk --new-window http://127.0.0.1:43127
+```
+
+Top-right should say **`9″ Pi · v5`**. If it still says v3/v4, the old process is still running — repeat the kill steps.
+
+**D. Restart later**
+
+```bash
+sudo fuser -k 43127/tcp
+cd ~/magic-mirror
+npm start
+DISPLAY=:0 chromium-browser --kiosk --new-window http://127.0.0.1:43127
+```
 
 ### 4. If you insist on building on the Pi
 
