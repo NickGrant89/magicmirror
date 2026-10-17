@@ -75,3 +75,16 @@ export type WeatherPayload = {
   weather: WeatherSnapshot;
   note?: string;
 };
+
+export type AlbumPhoto = {
+  id: string;
+  url: string;
+  caption?: string;
+};
+
+export type PhotosPayload = {
+  source: DataSource;
+  albumName: string;
+  photos: AlbumPhoto[];
+  note?: string;
+};

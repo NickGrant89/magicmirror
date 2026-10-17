@@ -7,6 +7,7 @@ import { DoorbellPanel } from "@/components/mirror/doorbell-panel";
 import { GuestWifiCard } from "@/components/mirror/guest-wifi-card";
 import { MirrorAtmosphere } from "@/components/mirror/mirror-atmosphere";
 import { NextEventCountdown } from "@/components/mirror/countdown";
+import { PhotoFrame } from "@/components/mirror/photo-frame";
 import { RadioPanel } from "@/components/mirror/radio-panel";
 import { TasksPanel } from "@/components/mirror/tasks-panel";
 import { WeatherPanel } from "@/components/mirror/weather-panel";
@@ -57,15 +58,17 @@ export function MirrorBoard() {
         </section>
 
         <section className="grid min-h-0 grid-cols-2 gap-2 overflow-hidden sm:grid-cols-3 sm:gap-3">
-          <div className="min-h-0 overflow-y-auto overscroll-contain pr-0.5">
+          <div className="flex min-h-0 flex-col">
+            <PhotoFrame compact />
+          </div>
+
+          <div className="min-h-0 space-y-2 overflow-y-auto overscroll-contain pr-0.5 sm:space-y-2.5">
             <CalendarPanel
               data={calendar.data}
               loading={calendar.loading}
               error={calendar.error}
               compact
             />
-          </div>
-          <div className="min-h-0 space-y-2 overflow-y-auto overscroll-contain pr-0.5 sm:space-y-2.5">
             <TasksPanel
               data={tasks.data}
               loading={tasks.loading}
@@ -79,6 +82,7 @@ export function MirrorBoard() {
               compact
             />
           </div>
+
           <div className="col-span-2 min-h-0 space-y-2 overflow-y-auto overscroll-contain pr-0.5 sm:col-span-1 sm:space-y-2.5">
             <GuestWifiCard compact />
             <RadioPanel compact />

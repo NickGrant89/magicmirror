@@ -10,6 +10,14 @@ export const mirrorConfig = {
     appleId: process.env.APPLE_ID ?? "",
     /** App-specific password from appleid.apple.com. */
     appPassword: process.env.APPLE_APP_PASSWORD ?? "",
+    /**
+     * Public iCloud Shared Album token or full URL
+     * (https://www.icloud.com/sharedalbum/#TOKEN — album must allow Public Website).
+     */
+    sharedAlbum:
+      process.env.APPLE_SHARED_ALBUM_TOKEN ??
+      process.env.APPLE_SHARED_ALBUM_URL ??
+      "",
   },
   blink: {
     email: process.env.BLINK_EMAIL ?? "",
@@ -21,6 +29,10 @@ export const mirrorConfig = {
     latitude: Number(process.env.MIRROR_LATITUDE ?? "51.5074"),
     longitude: Number(process.env.MIRROR_LONGITUDE ?? "-0.1278"),
     locationLabel: process.env.MIRROR_LOCATION_LABEL ?? "London",
+  },
+  photos: {
+    intervalMs: Number(process.env.NEXT_PUBLIC_PHOTO_INTERVAL_MS ?? "12000"),
+    albumLabel: process.env.NEXT_PUBLIC_PHOTO_ALBUM_NAME ?? "Family Album",
   },
 } as const;
 
@@ -37,4 +49,8 @@ export function hasAppleTasksConfig() {
 export function hasBlinkConfig() {
   const { email, password } = mirrorConfig.blink;
   return Boolean(email && password);
+}
+
+export function hasAppleSharedAlbumConfig() {
+  return Boolean(mirrorConfig.apple.sharedAlbum.trim());
 }
