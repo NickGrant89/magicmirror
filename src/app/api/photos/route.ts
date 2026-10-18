@@ -72,10 +72,12 @@ export async function GET() {
         photos: album.photos,
       };
       return NextResponse.json(payload);
-    } catch {
+    } catch (err) {
+      const detail =
+        err instanceof Error ? err.message : "Check album link / permissions.";
       return NextResponse.json(
         mockPayload(
-          "Apple Shared Album fetch failed — showing mock photos. Check token / Public Website.",
+          `Apple album fetch failed — showing mock photos. ${detail}`,
         ),
       );
     }
@@ -83,7 +85,7 @@ export async function GET() {
 
   return NextResponse.json(
     mockPayload(
-      "Mock album. Set APPLE_SHARED_ALBUM_TOKEN (or APPLE_SHARED_ALBUM_URL) for iCloud Shared Album.",
+      "Mock album. Set APPLE_SHARED_ALBUM_URL to a photos.icloud.com share link (or classic Public Website album).",
     ),
   );
 }

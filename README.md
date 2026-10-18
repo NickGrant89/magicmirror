@@ -81,7 +81,7 @@ cd ~/magic-mirror
 pwd
 # must show: /home/nick/magic-mirror
 
-# prove this is the new build (expect: v7 speaker)
+# prove this is the new build (expect: v8 photos)
 grep "Pi ·" src/components/mirror/mirror-board.tsx
 
 # build + start
@@ -107,7 +107,7 @@ Leave that terminal open. App listens on **http://127.0.0.1:43127**.
 DISPLAY=:0 chromium-browser --kiosk --new-window http://127.0.0.1:43127
 ```
 
-Top-right should say **`9″ Pi · v7 speaker`**. If it shows an older tag, the old process is still running — repeat the kill steps.
+Top-right should say **`9″ Pi · v8 photos`**. If it shows an older tag, the old process is still running — repeat the kill steps.
 
 **D. Restart later (no new zip)**
 
@@ -196,7 +196,7 @@ cp .env.example .env.local
 ```
 
 - **Apple Calendar / Reminders:** `APPLE_CALDAV_URL`, `APPLE_ID`, `APPLE_APP_PASSWORD`
-- **Apple Photos (Shared Album):** `APPLE_SHARED_ALBUM_TOKEN` or `APPLE_SHARED_ALBUM_URL` — enable **Public Website** on the album, then paste the link/token. Optional `NEXT_PUBLIC_PHOTO_ALBUM_NAME`, `NEXT_PUBLIC_PHOTO_INTERVAL_MS`
+- **Apple Photos:** paste a share link into `APPLE_SHARED_ALBUM_URL` — either `https://photos.icloud.com/shared/album/…` (Copy Link) or classic Public Website `https://www.icloud.com/sharedalbum/#…`. Optional `NEXT_PUBLIC_PHOTO_ALBUM_NAME`, `NEXT_PUBLIC_PHOTO_INTERVAL_MS`
 - **Blink:** `BLINK_EMAIL`, `BLINK_PASSWORD`, optional `BLINK_CLIENT_ID`
 - **Weather location:** `MIRROR_LATITUDE`, `MIRROR_LONGITUDE`, `MIRROR_LOCATION_LABEL`
 - **Radio:** `NEXT_PUBLIC_RADIO_STREAM_URL`, `NEXT_PUBLIC_RADIO_STATION_NAME`, `NEXT_PUBLIC_RADIO_STATION_TAGLINE`
