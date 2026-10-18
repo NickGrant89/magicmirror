@@ -81,7 +81,7 @@ cd ~/magic-mirror
 pwd
 # must show: /home/nick/magic-mirror
 
-# prove this is the new build (expect: v8 photos)
+# prove this is the new build (expect: v9 caldav)
 grep "Pi ·" src/components/mirror/mirror-board.tsx
 
 # build + start
@@ -107,7 +107,7 @@ Leave that terminal open. App listens on **http://127.0.0.1:43127**.
 DISPLAY=:0 chromium-browser --kiosk --new-window http://127.0.0.1:43127
 ```
 
-Top-right should say **`9″ Pi · v8 photos`**. If it shows an older tag, the old process is still running — repeat the kill steps.
+Top-right should say **`9″ Pi · v9 caldav`**. If it shows an older tag, the old process is still running — repeat the kill steps.
 
 **D. Restart later (no new zip)**
 
@@ -182,8 +182,8 @@ Tips:
 | Guest Wi‑Fi | Live QR + SSID/password card (`DIGI-Guest` by default). Override with `NEXT_PUBLIC_WIFI_*`. |
 | Photo frame | Mock slideshow by default. Live via public **iCloud Shared Album** (`APPLE_SHARED_ALBUM_TOKEN` / URL). |
 | Bluetooth speaker | Status + volume on the Pi (`pactl` / `bluetoothctl`). Pair once in Pi OS, set `BLUETOOTH_SPEAKER_MAC`. |
-| Calendar | Mock + CalDAV config hook |
-| Reminders | Mock + Apple config hook |
+| Calendar | Live via iCloud CalDAV when `APPLE_ID` + `APPLE_APP_PASSWORD` are set |
+| Reminders | Live via iCloud CalDAV (VTODO) with the same Apple credentials |
 | Blink doorbell | Mock + Blink config hook |
 | Next-event countdown | Derived from calendar events |
 
@@ -195,7 +195,7 @@ Copy `.env.example` to `.env.local` and fill in credentials when ready:
 cp .env.example .env.local
 ```
 
-- **Apple Calendar / Reminders:** `APPLE_CALDAV_URL`, `APPLE_ID`, `APPLE_APP_PASSWORD`
+- **Apple Calendar / Reminders:** create an **app-specific password** at [appleid.apple.com](https://appleid.apple.com) → Sign-In and Security → App-Specific Passwords. Set `APPLE_ID` (email) and `APPLE_APP_PASSWORD`. Optional `APPLE_CALDAV_URL` (defaults to `https://caldav.icloud.com`).
 - **Apple Photos:** paste a share link into `APPLE_SHARED_ALBUM_URL` — either `https://photos.icloud.com/shared/album/…` (Copy Link) or classic Public Website `https://www.icloud.com/sharedalbum/#…`. Optional `NEXT_PUBLIC_PHOTO_ALBUM_NAME`, `NEXT_PUBLIC_PHOTO_INTERVAL_MS`
 - **Blink:** `BLINK_EMAIL`, `BLINK_PASSWORD`, optional `BLINK_CLIENT_ID`
 - **Weather location:** `MIRROR_LATITUDE`, `MIRROR_LONGITUDE`, `MIRROR_LOCATION_LABEL`

@@ -1,24 +1,41 @@
 import { NextResponse } from "next/server";
 import { hasAppleTasksConfig } from "@/lib/config";
+import { fetchIcloudReminders } from "@/lib/icloud-caldav";
 import { mockTasks } from "@/lib/mocks";
 import type { TasksPayload } from "@/lib/types";
 
-
 /**
- * Returns reminders / tasks.
- * Live Apple Reminders wiring lands when APPLE_ID + APPLE_APP_PASSWORD are set.
+ * Reminders / tasks.
+ * Live via iCloud CalDAV (VTODO) when APPLE_ID + APPLE_APP_PASSWORD are set.
  */
 export async function GET() {
   if (hasAppleTasksConfig()) {
-    // Hook: fetch Reminders (CalDAV VTODO or Reminders API bridge) here.
+    try {
+      const tasks = await fetchIcloudReminders({ limit: 8 });
+      const payload: TasksPayload = {
+        source: "live",
+        tasks,
+        note:
+          tasks.length === 0
+            ? "Connected to iCloud — no open reminders."
+            : undefined,
+      };
+      return NextResponse.json(payload);
+    } catch (err) {
+      const detail =
+        err instanceof Error ? err.message : "CalDAV request failed";
+      return NextResponse.json({
+        source: "mock",
+        tasks: mockTasks().filter((task) => !task.completed).slice(0, 5),
+        note: `iCloud reminders failed — showing mock. ${detail}`,
+      } satisfies TasksPayload);
+    }
   }
 
   const payload: TasksPayload = {
     source: "mock",
     tasks: mockTasks().filter((task) => !task.completed).slice(0, 5),
-    note: hasAppleTasksConfig()
-      ? "Apple credentials detected — Reminders client not wired yet; showing mock tasks."
-      : "Mock tasks. Set APPLE_ID and APPLE_APP_PASSWORD for Reminders.",
+    note: "Mock tasks. Set APPLE_ID and APPLE_APP_PASSWORD (app-specific) for Reminders.",
   };
 
   return NextResponse.json(payload);

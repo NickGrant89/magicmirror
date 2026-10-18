@@ -4,15 +4,14 @@
  */
 export const mirrorConfig = {
   apple: {
-    /** CalDAV principal or calendar feed URL (iCloud CalDAV). */
-    caldavUrl: process.env.APPLE_CALDAV_URL ?? "",
+    /** CalDAV server (defaults to iCloud). */
+    caldavUrl: process.env.APPLE_CALDAV_URL ?? "https://caldav.icloud.com",
     /** Apple ID email used for CalDAV / Reminders. */
     appleId: process.env.APPLE_ID ?? "",
-    /** App-specific password from appleid.apple.com. */
+    /** App-specific password from appleid.apple.com (not your normal password). */
     appPassword: process.env.APPLE_APP_PASSWORD ?? "",
     /**
-     * Public iCloud Shared Album token or full URL
-     * (https://www.icloud.com/sharedalbum/#TOKEN — album must allow Public Website).
+     * Shared album URL — photos.icloud.com/shared/album/… or classic Public Website.
      */
     sharedAlbum:
       process.env.APPLE_SHARED_ALBUM_TOKEN ??
@@ -37,8 +36,8 @@ export const mirrorConfig = {
 } as const;
 
 export function hasAppleCalendarConfig() {
-  const { caldavUrl, appleId, appPassword } = mirrorConfig.apple;
-  return Boolean(caldavUrl && appleId && appPassword);
+  const { appleId, appPassword } = mirrorConfig.apple;
+  return Boolean(appleId && appPassword);
 }
 
 export function hasAppleTasksConfig() {
