@@ -81,7 +81,7 @@ cd ~/magic-mirror
 pwd
 # must show: /home/nick/magic-mirror
 
-# prove this is the new build (expect: v12 radio)
+# prove this is the new build (expect: v12.1)
 grep "Pi ·" src/components/mirror/mirror-board.tsx
 
 # build + start
