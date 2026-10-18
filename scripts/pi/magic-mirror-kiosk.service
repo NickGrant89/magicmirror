@@ -1,0 +1,17 @@
+[Unit]
+Description=Magic Mirror Chromium kiosk
+After=magic-mirror.service graphical-session.target
+Wants=magic-mirror.service
+
+[Service]
+Type=simple
+Environment=DISPLAY=:0
+Environment=XAUTHORITY=%h/.Xauthority
+# Prefer chromium-browser, fall back to chromium
+ExecStartPre=/bin/sleep 3
+ExecStart=/bin/bash -lc 'BIN=$(command -v chromium-browser || command -v chromium); exec "$BIN" --kiosk --noerrdialogs --disable-infobars --check-for-update-interval=31536000 --disable-session-crashed-bubble --no-first-run http://127.0.0.1:43127'
+Restart=on-failure
+RestartSec=5
+
+[Install]
+WantedBy=default.target

@@ -1,0 +1,8 @@
+[Unit]
+Description=Apply Magic Mirror zip update
+After=network-online.target
+
+[Service]
+Type=oneshot
+ExecStart=%h/magic-mirror/scripts/pi/apply-update.sh
+Nice=10

@@ -42,80 +42,39 @@ cd magic-mirror
 git checkout cursor/magic-mirror-dashboard-a8ca   # if needed
 ```
 
-### 3. AFTER EVERY UPDATE (copy-paste)
+### 3. AFTER EVERY UPDATE (auto)
 
-Do these two blocks whenever you get a new `magic_mirror_for_mac.zip`.
+**One-time on the Pi** (after the first successful install of this release):
 
-**A. On your Mac — send the zip**
+```bash
+cd ~/magic-mirror
+bash scripts/pi/install-autoupdate.sh
+```
+
+That installs systemd services for the app, Chromium kiosk, and a zip watcher.
+
+**Every update after that — Mac only:**
 
 ```bash
 scp "/Users/Nick/Library/Application Support/Cursor/AgentStores/cursor_agent_stores/bc-49af559d-8e32-415f-8dc0-796abe65ea0f/files/artifacts/magic_mirror_for_mac.zip" nick@192.168.1.144:~/
 ```
 
-(Change IP if your Pi is not `192.168.1.144`.)
-
-**B. On the Pi — one-shot update** (SSH session)
+The Pi detects the new zip, rebuilds, restores `.env.local`, and restarts the kiosk. Check progress with:
 
 ```bash
-# stop old mirror + browser
-sudo fuser -k 43127/tcp 2>/dev/null
-sudo pkill -9 -f "next start" 2>/dev/null
-sudo pkill -9 -f "next-server" 2>/dev/null
-pkill -9 chromium 2>/dev/null
-pkill -9 chromium-browser 2>/dev/null
-
-# clean leftover junk from earlier mistakes
-rm -f ~/package.json ~/package-lock.json
-rm -rf ~/node_modules ~/.next
-
-# install fresh copy
-cd ~
-rm -rf magic-mirror
-unzip -o magic_mirror_for_mac.zip -d magic-mirror
-# flatten nested folder if zip contains magic_mirror_for_mac/
-if [ -d ~/magic-mirror/magic_mirror_for_mac ]; then
-  mv ~/magic-mirror/magic_mirror_for_mac/* ~/magic-mirror/
-  rmdir ~/magic-mirror/magic_mirror_for_mac
-fi
-cd ~/magic-mirror
-pwd
-# must show: /home/nick/magic-mirror
-
-# prove this is the new build (expect: v12.1)
-grep "Pi ·" src/components/mirror/mirror-board.tsx
-
-# build + start
-node -v          # need v20+
-npm install
-rm -rf .next
-npm run build
-npm start
+tail -f ~/.magic-mirror/update.log
+# top-right should show the new version tag, e.g. v13 auto
 ```
 
-Leave that terminal open. App listens on **http://127.0.0.1:43127**.
-
-**Or** after the zip is in `~/`, run the helper (same steps):
+**Manual update** (if auto-update is not installed yet):
 
 ```bash
-# first time only — after unzip, or copy the script over:
-# bash ~/magic-mirror/scripts/update-from-zip.sh
-```
-
-**C. Open fullscreen** (second terminal / VNC — needs a desktop `DISPLAY`):
-
-```bash
-DISPLAY=:0 chromium-browser --kiosk --new-window http://127.0.0.1:43127
-```
-
-Top-right should say **`9″ Pi · v12 radio`**. If it shows an older tag, the old process is still running — repeat the kill steps.
-
-**D. Restart later (no new zip)**
-
-```bash
-sudo fuser -k 43127/tcp
-cd ~/magic-mirror
-npm start
-DISPLAY=:0 chromium-browser --kiosk --new-window http://127.0.0.1:43127
+scp "…/magic_mirror_for_mac.zip" nick@192.168.1.144:~/
+# on Pi:
+bash ~/magic-mirror/scripts/pi/apply-update.sh
+# or first install:
+cd ~ && rm -rf magic-mirror && unzip -o magic_mirror_for_mac.zip -d magic-mirror
+# flatten if needed, then npm install && npm run build && bash scripts/pi/install-autoupdate.sh
 ```
 
 ### 4. If you insist on building on the Pi

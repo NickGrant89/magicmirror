@@ -1,0 +1,9 @@
+[Unit]
+Description=Watch for new Magic Mirror zip in home
+
+[Path]
+PathModified=%h/magic_mirror_for_mac.zip
+Unit=magic-mirror-update.service
+
+[Install]
+WantedBy=default.target

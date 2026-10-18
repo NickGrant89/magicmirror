@@ -1,0 +1,16 @@
+[Unit]
+Description=Magic Mirror (Next.js)
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+WorkingDirectory=%h/magic-mirror
+Environment=NODE_ENV=production
+ExecStart=/usr/bin/npm start
+Restart=on-failure
+RestartSec=5
+TimeoutStartSec=120
+
+[Install]
+WantedBy=default.target
