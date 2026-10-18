@@ -286,8 +286,13 @@ export async function fetchIcloudReminders(options?: {
     }
   }
 
+  const upgradeNoise =
+    /upgraded these reminders|where are my reminders\??/i;
+
   return collected
     .filter((t) => !t.completed)
+    .filter((t) => !upgradeNoise.test(t.title))
+    .filter((t) => !/⚠︎|⚠️/.test(t.list ?? ""))
     .sort((a, b) => {
       const aDue = a.dueAt ? new Date(a.dueAt).getTime() : Number.MAX_SAFE_INTEGER;
       const bDue = b.dueAt ? new Date(b.dueAt).getTime() : Number.MAX_SAFE_INTEGER;
