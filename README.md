@@ -81,7 +81,7 @@ cd ~/magic-mirror
 pwd
 # must show: /home/nick/magic-mirror
 
-# prove this is the new build (expect: v10 clean)
+# prove this is the new build (expect: v11 news)
 grep "Pi ·" src/components/mirror/mirror-board.tsx
 
 # build + start
@@ -107,7 +107,7 @@ Leave that terminal open. App listens on **http://127.0.0.1:43127**.
 DISPLAY=:0 chromium-browser --kiosk --new-window http://127.0.0.1:43127
 ```
 
-Top-right should say **`9″ Pi · v10 clean`**. If it shows an older tag, the old process is still running — repeat the kill steps.
+Top-right should say **`9″ Pi · v11 news`**. If it shows an older tag, the old process is still running — repeat the kill steps.
 
 **D. Restart later (no new zip)**
 
@@ -181,9 +181,9 @@ Tips:
 | Radio | Live [Capital XTRA](https://www.capitalxtra.com/) stream (play/pause). Override with `NEXT_PUBLIC_RADIO_*`. |
 | Guest Wi‑Fi | Live QR + SSID/password card (`DIGI-Guest` by default). Override with `NEXT_PUBLIC_WIFI_*`. |
 | Photo frame | Mock slideshow by default. Live via public **iCloud Shared Album** (`APPLE_SHARED_ALBUM_TOKEN` / URL). |
-| Bluetooth speaker | Status + volume on the Pi (`pactl` / `bluetoothctl`). Pair once in Pi OS, set `BLUETOOTH_SPEAKER_MAC`. |
 | Calendar | Live via iCloud CalDAV when `APPLE_ID` + `APPLE_APP_PASSWORD` are set |
-| Reminders | Live via iCloud CalDAV (VTODO) with the same Apple credentials |
+| News | Live BBC UK RSS (override with `NEWS_FEED_URL`) |
+| Lights | Webhook buttons for Alexa/HA/IFTTT (`LIGHTS_ON_URL` / `LIGHTS_OFF_URL`) |
 | Blink doorbell | Mock + Blink config hook |
 | Next-event countdown | Derived from calendar events |
 
@@ -201,9 +201,10 @@ cp .env.example .env.local
 - **Weather location:** `MIRROR_LATITUDE`, `MIRROR_LONGITUDE`, `MIRROR_LOCATION_LABEL`
 - **Radio:** `NEXT_PUBLIC_RADIO_STREAM_URL`, `NEXT_PUBLIC_RADIO_STATION_NAME`, `NEXT_PUBLIC_RADIO_STATION_TAGLINE`
 - **Guest Wi‑Fi:** `NEXT_PUBLIC_WIFI_SSID`, `NEXT_PUBLIC_WIFI_PASSWORD`, `NEXT_PUBLIC_WIFI_SECURITY`, `NEXT_PUBLIC_WIFI_LABEL`
-- **Bluetooth speaker:** Pair in Pi Bluetooth settings first, then set `BLUETOOTH_SPEAKER_MAC` (from `bluetoothctl devices`) and optional `BLUETOOTH_SPEAKER_NAME`. Mirror **Connect** / volume buttons call `bluetoothctl` + `pactl`.
+- **News:** `NEWS_FEED_URL` (default BBC UK), `NEWS_FEED_LABEL`, `NEWS_LIMIT`
+- **Alexa / lights:** Amazon does not expose a simple light API. Create two **IFTTT** applets (Webhook → Alexa routine for on/off), then set `LIGHTS_ON_URL` and `LIGHTS_OFF_URL`. Home Assistant webhook URLs work the same way. Optional `LIGHTS_LABEL`, `LIGHTS_WEBHOOK_METHOD`.
 
-API route handlers under `src/app/api/*` check these env vars and are ready for live clients; until wired, polished mocks keep the UI usable.
+API route handlers under `src/app/api/*` check these env vars; until wired, polished mocks keep the UI usable.
 
 ## Stack
 

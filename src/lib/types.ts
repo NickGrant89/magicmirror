@@ -100,3 +100,25 @@ export type BluetoothPayload = {
   muted: boolean;
   note?: string;
 };
+
+export type NewsItem = {
+  id: string;
+  title: string;
+  link?: string;
+  publishedAt?: string;
+};
+
+export type NewsPayload = {
+  source: DataSource;
+  feedTitle: string;
+  items: NewsItem[];
+  note?: string;
+};
+
+export type LightsPayload = {
+  source: DataSource;
+  configured: boolean;
+  label: string;
+  lastAction?: "on" | "off" | null;
+  note?: string;
+};
