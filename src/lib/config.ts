@@ -38,20 +38,9 @@ export const mirrorConfig = {
       process.env.NEWS_FEED_URL ??
       "https://feeds.bbci.co.uk/news/uk/rss.xml",
     feedLabel: process.env.NEWS_FEED_LABEL ?? "BBC News",
-    limit: Number(process.env.NEWS_LIMIT ?? "5"),
-  },
-  lights: {
-    label: process.env.LIGHTS_LABEL ?? "Alexa lights",
-    onUrl: process.env.LIGHTS_ON_URL ?? "",
-    offUrl: process.env.LIGHTS_OFF_URL ?? "",
-    method: (process.env.LIGHTS_WEBHOOK_METHOD ?? "POST").toUpperCase(),
+    limit: Number(process.env.NEWS_LIMIT ?? "8"),
   },
 } as const;
-
-export function hasLightsConfig() {
-  const { onUrl, offUrl } = mirrorConfig.lights;
-  return Boolean(onUrl.trim() || offUrl.trim());
-}
 
 export function hasAppleCalendarConfig() {
   const { appleId, appPassword } = mirrorConfig.apple;

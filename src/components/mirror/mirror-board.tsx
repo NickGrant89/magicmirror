@@ -4,7 +4,6 @@ import { CalendarPanel } from "@/components/mirror/calendar-panel";
 import { Clock } from "@/components/mirror/clock";
 import { CryptoPanel } from "@/components/mirror/crypto-panel";
 import { GuestWifiCard } from "@/components/mirror/guest-wifi-card";
-import { LightsPanel } from "@/components/mirror/lights-panel";
 import { MirrorAtmosphere } from "@/components/mirror/mirror-atmosphere";
 import { NewsPanel } from "@/components/mirror/news-panel";
 import { NextEventCountdown } from "@/components/mirror/countdown";
@@ -32,14 +31,18 @@ export function MirrorBoard() {
           Magic Mirror
         </p>
         <p className="text-[0.6rem] tracking-[0.18em] text-white/30 uppercase">
-          9″ Pi · v11 news
+          9″ Pi · v12 radio
         </p>
       </header>
 
-      <main className="relative z-10 mx-auto flex min-h-0 w-full max-w-6xl flex-1 flex-col gap-4 overflow-hidden">
-        <section className="grid shrink-0 grid-cols-1 items-end gap-4 sm:grid-cols-[1.35fr_1fr]">
+      <main className="relative z-10 mx-auto flex min-h-0 w-full max-w-6xl flex-1 flex-col gap-3 overflow-hidden">
+        {/* Top: clock + radio + glanceables */}
+        <section className="grid shrink-0 grid-cols-1 items-end gap-3 sm:grid-cols-[1.2fr_1fr_1.05fr]">
           <Clock />
-          <div className="grid grid-cols-2 gap-4 border-l border-white/10 pl-0 sm:pl-5">
+          <div className="min-w-0 border-white/10 sm:border-l sm:pl-4">
+            <RadioPanel compact />
+          </div>
+          <div className="grid grid-cols-2 gap-3 border-white/10 sm:border-l sm:pl-4">
             <WeatherPanel
               data={weather.data}
               loading={weather.loading}
@@ -67,8 +70,9 @@ export function MirrorBoard() {
               error={calendar.error}
               compact
             />
-            <RadioPanel compact />
-            <NewsPanel compact />
+            <div className="min-h-0 flex-1 overflow-hidden">
+              <NewsPanel compact />
+            </div>
           </div>
 
           <div className="flex min-h-0 flex-col justify-start gap-3 overflow-hidden border-white/10 sm:border-l sm:pl-4">
@@ -79,7 +83,6 @@ export function MirrorBoard() {
               error={crypto.error}
               compact
             />
-            <LightsPanel compact />
           </div>
         </section>
       </main>

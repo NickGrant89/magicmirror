@@ -34,7 +34,7 @@ export function NewsPanel({ compact = false }: { compact?: boolean }) {
               <p
                 className={cn(
                   "line-clamp-2 leading-snug text-white/85",
-                  compact ? "text-[0.8rem]" : "text-sm",
+                  compact ? "text-[0.75rem]" : "text-sm",
                 )}
               >
                 {item.title}

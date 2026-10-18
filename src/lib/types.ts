@@ -115,10 +115,3 @@ export type NewsPayload = {
   note?: string;
 };
 
-export type LightsPayload = {
-  source: DataSource;
-  configured: boolean;
-  label: string;
-  lastAction?: "on" | "off" | null;
-  note?: string;
-};
