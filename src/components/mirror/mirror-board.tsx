@@ -8,20 +8,16 @@ import { MirrorAtmosphere } from "@/components/mirror/mirror-atmosphere";
 import { NextEventCountdown } from "@/components/mirror/countdown";
 import { PhotoFrame } from "@/components/mirror/photo-frame";
 import { RadioPanel } from "@/components/mirror/radio-panel";
-import { SpeakerPanel } from "@/components/mirror/speaker-panel";
-import { TasksPanel } from "@/components/mirror/tasks-panel";
 import { WeatherPanel } from "@/components/mirror/weather-panel";
 import { usePollingJson } from "@/hooks/use-polling-json";
 import type {
   CalendarPayload,
   CryptoPayload,
-  TasksPayload,
   WeatherPayload,
 } from "@/lib/types";
 
 export function MirrorBoard() {
   const calendar = usePollingJson<CalendarPayload>("/api/calendar", 60_000);
-  const tasks = usePollingJson<TasksPayload>("/api/tasks", 60_000);
   const crypto = usePollingJson<CryptoPayload>("/api/crypto", 60_000);
   const weather = usePollingJson<WeatherPayload>("/api/weather", 15 * 60_000);
 
@@ -34,7 +30,7 @@ export function MirrorBoard() {
           Magic Mirror
         </p>
         <p className="text-[0.6rem] tracking-[0.18em] text-white/30 uppercase">
-          9″ Pi · v9 caldav
+          9″ Pi · v10 clean
         </p>
       </header>
 
@@ -71,12 +67,6 @@ export function MirrorBoard() {
               error={calendar.error}
               compact
             />
-            <TasksPanel
-              data={tasks.data}
-              loading={tasks.loading}
-              error={tasks.error}
-              compact
-            />
             <RadioPanel compact />
           </div>
 
@@ -88,7 +78,6 @@ export function MirrorBoard() {
               error={crypto.error}
               compact
             />
-            <SpeakerPanel compact />
           </div>
         </section>
       </main>

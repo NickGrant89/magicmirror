@@ -13,7 +13,7 @@ const INTERVAL_MS = Number(
 export function PhotoFrame({ compact = false }: { compact?: boolean }) {
   const { data, loading, error } = usePollingJson<PhotosPayload>(
     "/api/photos",
-    10 * 60_000,
+    2 * 60_000,
   );
   const photos = data?.photos ?? [];
   const [index, setIndex] = useState(0);

@@ -81,7 +81,7 @@ cd ~/magic-mirror
 pwd
 # must show: /home/nick/magic-mirror
 
-# prove this is the new build (expect: v9 caldav)
+# prove this is the new build (expect: v10 clean)
 grep "Pi ·" src/components/mirror/mirror-board.tsx
 
 # build + start
@@ -107,7 +107,7 @@ Leave that terminal open. App listens on **http://127.0.0.1:43127**.
 DISPLAY=:0 chromium-browser --kiosk --new-window http://127.0.0.1:43127
 ```
 
-Top-right should say **`9″ Pi · v9 caldav`**. If it shows an older tag, the old process is still running — repeat the kill steps.
+Top-right should say **`9″ Pi · v10 clean`**. If it shows an older tag, the old process is still running — repeat the kill steps.
 
 **D. Restart later (no new zip)**
 
