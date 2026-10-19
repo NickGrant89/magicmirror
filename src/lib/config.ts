@@ -48,10 +48,6 @@ export const mirrorConfig = {
       },
     ],
   },
-  calendar: {
-    /** How many upcoming events to show on the mirror. */
-    limit: Number(process.env.CALENDAR_LIMIT ?? "3"),
-  },
 } as const;
 
 export function hasAppleCalendarConfig() {

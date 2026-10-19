@@ -155,26 +155,47 @@ function supportsComponent(cal: DavCalendar, component: string) {
   return comps.includes(component.toUpperCase());
 }
 
+function startOfLocalDay(d = new Date()) {
+  const day = new Date(d);
+  day.setHours(0, 0, 0, 0);
+  return day;
+}
+
+function endOfLocalDay(d = new Date()) {
+  const day = startOfLocalDay(d);
+  day.setDate(day.getDate() + 1);
+  return day;
+}
+
+function overlapsLocalDay(event: CalendarEvent, dayStart: Date, dayEnd: Date) {
+  const starts = new Date(event.startsAt).getTime();
+  const ends = new Date(event.endsAt).getTime();
+  return starts < dayEnd.getTime() && ends > dayStart.getTime();
+}
+
 /**
- * Upcoming events across all calendars that support VEVENT (next N days).
+ * Events across CalDAV calendars.
+ * Default: everything on the local calendar day (no artificial cap).
  */
 export async function fetchIcloudCalendarEvents(options?: {
+  /** @deprecated Prefer todayOnly — kept for callers that want a multi-day window. */
   daysAhead?: number;
   limit?: number;
+  todayOnly?: boolean;
 }): Promise<CalendarEvent[]> {
-  const daysAhead = options?.daysAhead ?? 14;
-  const limit = options?.limit ?? 12;
+  const todayOnly = options?.todayOnly ?? true;
+  const daysAhead = options?.daysAhead ?? (todayOnly ? 1 : 14);
+  const limit = options?.limit;
   const client = await getClient();
   const calendars = (await client.fetchCalendars()) as DavCalendar[];
 
-  const start = new Date();
-  start.setHours(0, 0, 0, 0);
-  const end = new Date(start);
-  end.setDate(end.getDate() + daysAhead);
+  const dayStart = startOfLocalDay();
+  const rangeEnd = new Date(dayStart);
+  rangeEnd.setDate(rangeEnd.getDate() + Math.max(1, daysAhead));
 
   const timeRange = {
-    start: start.toISOString(),
-    end: end.toISOString(),
+    start: dayStart.toISOString(),
+    end: rangeEnd.toISOString(),
   };
 
   const collected: CalendarEvent[] = [];
@@ -198,14 +219,34 @@ export async function fetchIcloudCalendarEvents(options?: {
     }
   }
 
-  const now = Date.now();
-  return collected
-    .filter((e) => new Date(e.endsAt).getTime() >= now - 15 * 60 * 1000)
-    .sort(
-      (a, b) =>
-        new Date(a.startsAt).getTime() - new Date(b.startsAt).getTime(),
-    )
-    .slice(0, limit);
+  const dayEnd = endOfLocalDay();
+  let events = collected.sort(
+    (a, b) =>
+      new Date(a.startsAt).getTime() - new Date(b.startsAt).getTime(),
+  );
+
+  if (todayOnly) {
+    events = events.filter((e) => overlapsLocalDay(e, dayStart, dayEnd));
+  } else {
+    const now = Date.now();
+    events = events.filter(
+      (e) => new Date(e.endsAt).getTime() >= now - 15 * 60 * 1000,
+    );
+  }
+
+  // Dedupe identical uid+start
+  const seen = new Set<string>();
+  events = events.filter((e) => {
+    const key = `${e.id}|${e.startsAt}`;
+    if (seen.has(key)) return false;
+    seen.add(key);
+    return true;
+  });
+
+  if (typeof limit === "number" && limit > 0) {
+    return events.slice(0, limit);
+  }
+  return events;
 }
 
 /**
