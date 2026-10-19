@@ -15,7 +15,7 @@ export function CalendarPanel({
   error: string | null;
   compact?: boolean;
 }) {
-  const events = data?.events?.slice(0, compact ? 2 : 4) ?? [];
+  const events = data?.events?.slice(0, 3) ?? [];
 
   return (
     <section className="mirror-fade-in-delay-2">

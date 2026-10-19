@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { hasAppleCalendarConfig } from "@/lib/config";
+import { hasAppleCalendarConfig, mirrorConfig } from "@/lib/config";
 import { fetchIcloudCalendarEvents } from "@/lib/icloud-caldav";
 import { mockCalendarEvents } from "@/lib/mocks";
 import type { CalendarPayload } from "@/lib/types";
@@ -9,11 +9,13 @@ import type { CalendarPayload } from "@/lib/types";
  * Live via iCloud CalDAV when APPLE_ID + APPLE_APP_PASSWORD are set.
  */
 export async function GET() {
+  const limit = mirrorConfig.calendar.limit;
+
   if (hasAppleCalendarConfig()) {
     try {
       const events = await fetchIcloudCalendarEvents({
         daysAhead: 14,
-        limit: 12,
+        limit,
       });
       const payload: CalendarPayload = {
         source: "live",
@@ -29,7 +31,7 @@ export async function GET() {
         err instanceof Error ? err.message : "CalDAV request failed";
       return NextResponse.json({
         source: "mock",
-        events: mockCalendarEvents(),
+        events: mockCalendarEvents().slice(0, limit),
         note: `iCloud calendar failed — showing mock. ${detail}`,
       } satisfies CalendarPayload);
     }
@@ -37,7 +39,7 @@ export async function GET() {
 
   const payload: CalendarPayload = {
     source: "mock",
-    events: mockCalendarEvents(),
+    events: mockCalendarEvents().slice(0, limit),
     note: "Mock calendar. Set APPLE_ID and APPLE_APP_PASSWORD (app-specific) for iCloud.",
   };
 

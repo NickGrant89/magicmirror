@@ -28,7 +28,7 @@ export async function GET() {
         },
         {
           id: "mock-2",
-          title: "BBC UK headlines appear here when the feed is reachable",
+          title: "Tech & crypto headlines appear here when feeds are reachable",
         },
       ],
       note: detail,

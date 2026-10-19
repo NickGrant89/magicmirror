@@ -141,7 +141,8 @@ Tips:
 | Guest Wi‑Fi | Live QR + SSID/password card (`DIGI-Guest` by default). Override with `NEXT_PUBLIC_WIFI_*`. |
 | Photo frame | Mock slideshow by default. Live via public **iCloud Shared Album** (`APPLE_SHARED_ALBUM_TOKEN` / URL). |
 | Calendar | Live via iCloud CalDAV when `APPLE_ID` + `APPLE_APP_PASSWORD` are set |
-| News | Live BBC UK RSS (override with `NEWS_FEED_URL`, `NEWS_LIMIT`) |
+| News | BBC Technology + CoinDesk crypto (override with `NEWS_FEED_URL`, `NEWS_LIMIT`) |
+| Calendar | Live iCloud events (show count via `CALENDAR_LIMIT`, default 3) |
 | Blink doorbell | Mock + Blink config hook |
 | Next-event countdown | Derived from calendar events |
 
@@ -159,7 +160,8 @@ cp .env.example .env.local
 - **Weather location:** `MIRROR_LATITUDE`, `MIRROR_LONGITUDE`, `MIRROR_LOCATION_LABEL`
 - **Radio:** `NEXT_PUBLIC_RADIO_STREAM_URL`, `NEXT_PUBLIC_RADIO_STATION_NAME`, `NEXT_PUBLIC_RADIO_STATION_TAGLINE`
 - **Guest Wi‑Fi:** `NEXT_PUBLIC_WIFI_SSID`, `NEXT_PUBLIC_WIFI_PASSWORD`, `NEXT_PUBLIC_WIFI_SECURITY`, `NEXT_PUBLIC_WIFI_LABEL`
-- **News:** `NEWS_FEED_URL` (default BBC UK), `NEWS_FEED_LABEL`, `NEWS_LIMIT` (default 8)
+- **News:** defaults to BBC Technology + CoinDesk. Optional `NEWS_FEED_URL` (single feed), `NEWS_FEED_LABEL`, `NEWS_LIMIT` (default 8)
+- **Calendar display:** `CALENDAR_LIMIT` (default 3)
 
 API route handlers under `src/app/api/*` check these env vars; until wired, polished mocks keep the UI usable.
 

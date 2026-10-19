@@ -34,11 +34,23 @@ export const mirrorConfig = {
     albumLabel: process.env.NEXT_PUBLIC_PHOTO_ALBUM_NAME ?? "Family Album",
   },
   news: {
-    feedUrl:
-      process.env.NEWS_FEED_URL ??
-      "https://feeds.bbci.co.uk/news/uk/rss.xml",
-    feedLabel: process.env.NEWS_FEED_LABEL ?? "BBC News",
+    feedLabel: process.env.NEWS_FEED_LABEL ?? "Tech & Crypto",
     limit: Number(process.env.NEWS_LIMIT ?? "8"),
+    /** Optional single-feed override. Otherwise tech + crypto feeds below. */
+    feeds: [
+      {
+        tag: "Tech",
+        url: "https://feeds.bbci.co.uk/news/technology/rss.xml",
+      },
+      {
+        tag: "Crypto",
+        url: "https://www.coindesk.com/arc/outboundfeeds/rss/",
+      },
+    ],
+  },
+  calendar: {
+    /** How many upcoming events to show on the mirror. */
+    limit: Number(process.env.CALENDAR_LIMIT ?? "3"),
   },
 } as const;
 
