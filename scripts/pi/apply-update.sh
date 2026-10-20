@@ -4,6 +4,9 @@
 
 set -euo pipefail
 
+# Never stay inside ~/magic-mirror — this script deletes and rebuilds that folder.
+cd "$HOME" || exit 1
+
 ZIP="${HOME}/magic_mirror_for_mac.zip"
 APP="${HOME}/magic-mirror"
 PORT=43127

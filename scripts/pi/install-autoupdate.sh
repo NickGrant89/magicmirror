@@ -5,6 +5,8 @@
 
 set -euo pipefail
 
+cd "$HOME" || exit 1
+
 APP="${HOME}/magic-mirror"
 UNIT_DIR="${HOME}/.config/systemd/user"
 
