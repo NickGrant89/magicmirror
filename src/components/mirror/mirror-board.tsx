@@ -31,7 +31,7 @@ export function MirrorBoard() {
           Magic Mirror
         </p>
         <p className="text-[0.6rem] tracking-[0.18em] text-white/30 uppercase">
-          9″ Pi · v16 crypto
+          9″ Pi · v16.1 fit
         </p>
       </header>
 
@@ -75,7 +75,7 @@ export function MirrorBoard() {
             </div>
           </div>
 
-          <div className="flex min-h-0 flex-col justify-start gap-3 overflow-hidden border-white/10 sm:border-l sm:pl-4">
+          <div className="flex min-h-0 flex-col justify-start gap-2 overflow-hidden border-white/10 sm:border-l sm:pl-4">
             <GuestWifiCard compact />
             <CryptoPanel
               data={crypto.data}
