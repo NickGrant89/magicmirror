@@ -16,7 +16,12 @@ ENV_BACKUP="${STAMP_DIR}/env.local.bak"
 LOG="${STAMP_DIR}/update.log"
 
 mkdir -p "$STAMP_DIR"
-exec >>"$LOG" 2>&1
+# Show progress in the terminal when run by hand; always keep a log.
+if [[ -t 1 ]]; then
+  exec > >(tee -a "$LOG") 2>&1
+else
+  exec >>"$LOG" 2>&1
+fi
 echo "======== $(date -Is) apply-update ========"
 
 if [[ ! -f "$ZIP" ]]; then
@@ -28,8 +33,10 @@ NEW_HASH="$(sha256sum "$ZIP" | awk '{print $1}')"
 OLD_HASH=""
 [[ -f "$STAMP_FILE" ]] && OLD_HASH="$(cat "$STAMP_FILE")"
 
-if [[ "$NEW_HASH" == "$OLD_HASH" && -d "$APP/.next" ]]; then
+# MAGIC_MIRROR_FORCE=1 rebuilds even if the zip hash matches.
+if [[ "${MAGIC_MIRROR_FORCE:-0}" != "1" && "$NEW_HASH" == "$OLD_HASH" && -d "$APP/.next" ]]; then
   echo "Zip unchanged ($NEW_HASH) and build exists — skip"
+  echo "Force with: MAGIC_MIRROR_FORCE=1 bash ~/magic-mirror/scripts/pi/apply-update.sh"
   exit 0
 fi
 
