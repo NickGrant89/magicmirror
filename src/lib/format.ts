@@ -59,16 +59,23 @@ export function formatCountdown(iso: string, now = new Date()) {
   return `${hours} hr ${mins} min`;
 }
 
+function moneyDigits(value: number) {
+  if (value > 0 && value < 0.001) return 6;
+  if (value < 1) return 4;
+  return 2;
+}
+
 export function formatMoney(value: number, currency: "USDT" | "GBP") {
+  const digits = moneyDigits(value);
   if (currency === "GBP") {
     return new Intl.NumberFormat("en-GB", {
       style: "currency",
       currency: "GBP",
-      maximumFractionDigits: value < 1 ? 4 : 2,
+      maximumFractionDigits: digits,
     }).format(value);
   }
 
-  return `${value < 1 ? value.toFixed(4) : value.toLocaleString("en-US", {
+  return `${value < 1 ? value.toFixed(digits) : value.toLocaleString("en-US", {
     maximumFractionDigits: 2,
   })} USDT`;
 }

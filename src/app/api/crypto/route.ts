@@ -2,15 +2,24 @@ import { NextResponse } from "next/server";
 import { mockCryptoFallback } from "@/lib/mocks";
 import type { CryptoPayload, CryptoQuote } from "@/lib/types";
 
-
 const COINGECKO_URL =
-  "https://api.coingecko.com/api/v3/simple/price?ids=bitcoin,vechain,ripple&vs_currencies=usd,gbp&include_24hr_change=true";
+  "https://api.coingecko.com/api/v3/simple/price?ids=bitcoin,vechain,ripple,binancecoin,holotoken&vs_currencies=usd,gbp&include_24hr_change=true";
 
 const ID_MAP = {
   bitcoin: { symbol: "BTC" as const, name: "Bitcoin" },
   vechain: { symbol: "VET" as const, name: "VeChain" },
   ripple: { symbol: "XRP" as const, name: "XRP" },
-};
+  binancecoin: { symbol: "BNB" as const, name: "BNB" },
+  holotoken: { symbol: "HOT" as const, name: "Holo" },
+} as const;
+
+const ORDER = [
+  "bitcoin",
+  "vechain",
+  "ripple",
+  "binancecoin",
+  "holotoken",
+] as const;
 
 type CoinGeckoResponse = Record<
   string,
@@ -30,7 +39,8 @@ export async function GET() {
     }
 
     const data = (await res.json()) as CoinGeckoResponse;
-    const quotes: CryptoQuote[] = Object.entries(ID_MAP).map(([id, meta]) => {
+    const quotes: CryptoQuote[] = ORDER.map((id) => {
+      const meta = ID_MAP[id];
       const row = data[id] ?? {};
       return {
         symbol: meta.symbol,

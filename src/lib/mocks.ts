@@ -128,4 +128,18 @@ export const mockCryptoFallback = [
     gbp: 0.478,
     change24hPct: 0.9,
   },
+  {
+    symbol: "BNB" as const,
+    name: "BNB",
+    usdt: 612.4,
+    gbp: 478.1,
+    change24hPct: 0.7,
+  },
+  {
+    symbol: "HOT" as const,
+    name: "Holo",
+    usdt: 0.00185,
+    gbp: 0.00144,
+    change24hPct: -1.2,
+  },
 ];

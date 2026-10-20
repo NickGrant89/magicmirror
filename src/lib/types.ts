@@ -27,7 +27,7 @@ export type DoorbellEvent = {
 };
 
 export type CryptoQuote = {
-  symbol: "BTC" | "VET" | "XRP";
+  symbol: "BTC" | "VET" | "XRP" | "BNB" | "HOT";
   name: string;
   usdt: number;
   gbp: number;
