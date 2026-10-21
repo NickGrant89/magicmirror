@@ -30,23 +30,22 @@ export function CryptoPanel({
           {quotes.map((quote) => (
             <li
               key={quote.symbol}
-              className="grid grid-cols-[2.2rem_minmax(0,1fr)_auto] items-baseline gap-x-1.5 leading-none"
+              className="grid grid-cols-[2.4rem_minmax(0,1fr)_auto] items-start gap-x-1.5 leading-none"
             >
-              <span className="font-display text-[0.68rem] text-white">
+              <span className="pt-px font-display text-[0.7rem] text-white">
                 {quote.symbol}
               </span>
-              <p className="min-w-0 truncate text-[0.62rem] text-white/80 tabular-nums">
-                <span className="text-white/90">
+              <div className="min-w-0">
+                <p className="truncate text-[0.65rem] text-white/85 tabular-nums">
                   {formatMoney(quote.usdt, "USDT")}
-                </span>
-                <span className="text-white/35"> · </span>
-                <span className="text-white/50">
+                </p>
+                <p className="mt-px truncate text-[0.55rem] text-white/45 tabular-nums">
                   {formatMoney(quote.gbp, "GBP")}
-                </span>
-              </p>
+                </p>
+              </div>
               <span
                 className={cn(
-                  "text-[0.58rem] tabular-nums",
+                  "pt-px text-[0.58rem] tabular-nums",
                   (quote.change24hPct ?? 0) >= 0
                     ? "text-emerald-300/80"
                     : "text-rose-300/80",
