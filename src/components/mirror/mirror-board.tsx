@@ -31,7 +31,7 @@ export function MirrorBoard() {
           Magic Mirror
         </p>
         <p className="text-[0.6rem] tracking-[0.18em] text-white/30 uppercase">
-          9″ Pi · v16.3 classic
+          9″ Pi · v16.3.1
         </p>
       </header>
 
