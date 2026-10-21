@@ -25,58 +25,54 @@ export function CryptoPanel({
         <p className="text-sm text-white/40">Fetching prices…</p>
       ) : error && !data ? (
         <p className="text-sm text-white/50">Markets unavailable</p>
-      ) : compact ? (
-        <ul className="space-y-0.5">
-          {quotes.map((quote) => (
-            <li
-              key={quote.symbol}
-              className="grid grid-cols-[2.4rem_minmax(0,1fr)_auto] items-start gap-x-1.5 leading-none"
-            >
-              <span className="pt-px font-display text-[0.7rem] text-white">
-                {quote.symbol}
-              </span>
-              <div className="min-w-0">
-                <p className="truncate text-[0.65rem] text-white/85 tabular-nums">
-                  {formatMoney(quote.usdt, "USDT")}
-                </p>
-                <p className="mt-px truncate text-[0.55rem] text-white/45 tabular-nums">
-                  {formatMoney(quote.gbp, "GBP")}
-                </p>
-              </div>
-              <span
-                className={cn(
-                  "pt-px text-[0.58rem] tabular-nums",
-                  (quote.change24hPct ?? 0) >= 0
-                    ? "text-emerald-300/80"
-                    : "text-rose-300/80",
-                )}
-              >
-                {formatPct(quote.change24hPct)}
-              </span>
-            </li>
-          ))}
-        </ul>
       ) : (
-        <ul className="space-y-3">
+        <ul
+          className={cn(
+            compact ? "space-y-1" : "space-y-3",
+          )}
+        >
           {quotes.map((quote) => (
             <li
               key={quote.symbol}
-              className="grid grid-cols-[3.5rem_1fr_auto] items-baseline gap-3"
+              className={
+                compact
+                  ? "grid grid-cols-[2.5rem_1fr_auto] items-start gap-1.5"
+                  : "grid grid-cols-[3.5rem_1fr_auto] items-baseline gap-3"
+              }
             >
-              <span className="font-display text-xl text-white">
+              <span
+                className={
+                  compact
+                    ? "pt-0.5 font-display text-[0.7rem] text-white"
+                    : "font-display text-xl text-white"
+                }
+              >
                 {quote.symbol}
               </span>
-              <div className="min-w-0">
-                <p className="truncate text-base text-white/85 tabular-nums">
+              <div className="min-w-0 leading-tight">
+                <p
+                  className={
+                    compact
+                      ? "truncate text-[0.65rem] text-white/85 tabular-nums"
+                      : "truncate text-base text-white/85 tabular-nums"
+                  }
+                >
                   {formatMoney(quote.usdt, "USDT")}
                 </p>
-                <p className="truncate text-sm text-white/40 tabular-nums">
+                <p
+                  className={
+                    compact
+                      ? "truncate text-[0.58rem] text-white/45 tabular-nums"
+                      : "truncate text-sm text-white/40 tabular-nums"
+                  }
+                >
                   {formatMoney(quote.gbp, "GBP")}
                 </p>
               </div>
               <span
                 className={cn(
-                  "text-sm tabular-nums",
+                  "tabular-nums",
+                  compact ? "pt-0.5 text-[0.6rem]" : "text-sm",
                   (quote.change24hPct ?? 0) >= 0
                     ? "text-emerald-300/80"
                     : "text-rose-300/80",
