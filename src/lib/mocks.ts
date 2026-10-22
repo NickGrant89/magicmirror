@@ -48,6 +48,41 @@ export function mockCalendarEvents(): CalendarEvent[] {
   ];
 }
 
+/** Spread of mock events across the next week (for the week tab). */
+export function mockCalendarWeekEvents(): CalendarEvent[] {
+  const base = mockCalendarEvents();
+  const extras: CalendarEvent[] = [
+    {
+      id: "evt-school-run",
+      title: "School run",
+      ...atOffset(24 * 2 + 8, 30),
+    },
+    {
+      id: "evt-gym",
+      title: "Gym",
+      ...atOffset(24 * 3 + 18, 60),
+    },
+    {
+      id: "evt-parents",
+      title: "Parents evening",
+      location: "School",
+      ...atOffset(24 * 4 + 17, 45),
+    },
+    {
+      id: "evt-market",
+      title: "Farmers market",
+      ...atOffset(24 * 5 + 10, 90),
+      allDay: false,
+    },
+    {
+      id: "evt-brunch",
+      title: "Sunday brunch",
+      ...atOffset(24 * 6 + 11, 90),
+    },
+  ];
+  return [...base, ...extras];
+}
+
 export function mockTasks(): TaskItem[] {
   const later = new Date(Date.now() + 5 * 60 * 60 * 1000).toISOString();
   const tomorrow = new Date(Date.now() + 30 * 60 * 60 * 1000).toISOString();
