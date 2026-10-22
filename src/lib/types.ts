@@ -32,6 +32,9 @@ export type CryptoQuote = {
   usdt: number;
   gbp: number;
   change24hPct?: number;
+  change7dPct?: number;
+  /** Heuristic momentum signal — not financial advice */
+  signal?: "BUY" | "SELL" | "HOLD";
 };
 
 export type WeatherSnapshot = {
