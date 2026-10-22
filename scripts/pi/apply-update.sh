@@ -168,7 +168,10 @@ chmod +x \
   "${APP}/scripts/pi/install-autoupdate.sh" 2>/dev/null || true
 systemctl --user daemon-reload
 systemctl --user enable --now magic-mirror-update.path 2>/dev/null || true
-systemctl --user enable --now magic-mirror-github-fetch.timer 2>/dev/null || true
+# Restart so a shorter OnUnitActiveSec from this release takes effect immediately
+systemctl --user enable magic-mirror-github-fetch.timer 2>/dev/null || true
+systemctl --user restart magic-mirror-github-fetch.timer 2>/dev/null || \
+  systemctl --user start magic-mirror-github-fetch.timer 2>/dev/null || true
 
 echo "Build OK — restarting services"
 systemctl --user restart magic-mirror.service

@@ -1,10 +1,11 @@
 [Unit]
-Description=Check GitHub for Magic Mirror updates every 30 minutes
+Description=Check GitHub for Magic Mirror updates every 2 minutes
 
 [Timer]
-OnBootSec=3min
-OnUnitActiveSec=30min
-AccuracySec=1min
+# Near-instant on a home Pi = frequent poll (webhook would need a public URL).
+OnBootSec=1min
+OnUnitActiveSec=2min
+AccuracySec=30s
 Persistent=true
 Unit=magic-mirror-github-fetch.service
 
