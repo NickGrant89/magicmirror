@@ -11,6 +11,7 @@ export type MirrorSlide =
   | { id: "home"; kind: "home" }
   | { id: "weather"; kind: "weather" }
   | { id: "calendar"; kind: "calendar" }
+  | { id: "photos"; kind: "photos" }
   | { id: string; kind: "charts"; symbol: string };
 
 /**
@@ -71,6 +72,7 @@ export function useMirrorSlides(
         if (s.kind === "home") return "Home";
         if (s.kind === "weather") return "Weather";
         if (s.kind === "calendar") return "Calendar";
+        if (s.kind === "photos") return "Photos";
         return s.symbol;
       }),
     [list],
@@ -94,5 +96,6 @@ export function slideBadge(slide: MirrorSlide): string {
   if (slide.kind === "home") return "home";
   if (slide.kind === "weather") return "weather";
   if (slide.kind === "calendar") return "calendar";
+  if (slide.kind === "photos") return "photos";
   return slide.symbol;
 }

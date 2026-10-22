@@ -12,11 +12,13 @@ export const mirrorConfig = {
     appPassword: process.env.APPLE_APP_PASSWORD ?? "",
     /**
      * Shared album URL — photos.icloud.com/shared/album/… or classic Public Website.
+     * Falls back to Nick’s “Pi Pics” share so the Pi keeps working if .env.local
+     * loses APPLE_SHARED_ALBUM_URL after an update.
      */
     sharedAlbum:
       process.env.APPLE_SHARED_ALBUM_TOKEN ??
       process.env.APPLE_SHARED_ALBUM_URL ??
-      "",
+      "https://photos.icloud.com/shared/album/0f1HlHAgTEQcvLeRsyPYqVOyg",
   },
   blink: {
     email: process.env.BLINK_EMAIL ?? "",
@@ -31,7 +33,7 @@ export const mirrorConfig = {
   },
   photos: {
     intervalMs: Number(process.env.NEXT_PUBLIC_PHOTO_INTERVAL_MS ?? "12000"),
-    albumLabel: process.env.NEXT_PUBLIC_PHOTO_ALBUM_NAME ?? "Family Album",
+    albumLabel: process.env.NEXT_PUBLIC_PHOTO_ALBUM_NAME ?? "Pi Pics",
   },
   news: {
     feedLabel: process.env.NEWS_FEED_LABEL ?? "Tech & Crypto",

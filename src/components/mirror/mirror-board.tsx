@@ -11,6 +11,7 @@ import { MirrorAtmosphere } from "@/components/mirror/mirror-atmosphere";
 import { NewsPanel } from "@/components/mirror/news-panel";
 import { NextEventCountdown } from "@/components/mirror/countdown";
 import { PhotoFrame } from "@/components/mirror/photo-frame";
+import { PhotosSlide } from "@/components/mirror/photos-slide";
 import { RadioPanel } from "@/components/mirror/radio-panel";
 import { WeatherPanel } from "@/components/mirror/weather-panel";
 import { WeatherWeekSlide } from "@/components/mirror/weather-week-slide";
@@ -59,6 +60,7 @@ export function MirrorBoard() {
     );
     const base: MirrorSlide[] = [
       { id: "home", kind: "home" },
+      { id: "photos", kind: "photos" },
       { id: "weather", kind: "weather" },
       { id: "calendar", kind: "calendar" },
     ];
@@ -113,7 +115,7 @@ export function MirrorBoard() {
             ))}
           </div>
           <p className="truncate text-[0.6rem] tracking-[0.14em] text-white/30 uppercase">
-            9″ Pi · v16.9 calendar · {slideBadge(slides.slide)} ·{" "}
+            9″ Pi · v16.10 photos · {slideBadge(slides.slide)} ·{" "}
             {formatSlideRemain(slides.remainingMs)}
           </p>
         </div>
@@ -178,6 +180,8 @@ export function MirrorBoard() {
                 </div>
               </section>
             </>
+          ) : slides.slide.kind === "photos" ? (
+            <PhotosSlide />
           ) : slides.slide.kind === "weather" ? (
             <WeatherWeekSlide
               data={weather.data}
