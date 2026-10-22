@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
-# One-time Pi setup: systemd user services for app, kiosk, and zip auto-update.
+# One-time Pi setup: systemd user services for app, kiosk, zip watcher,
+# and optional GitHub Releases poller.
 # Run from inside ~/magic-mirror after first install:
 #   bash scripts/pi/install-autoupdate.sh
 
@@ -15,13 +16,21 @@ if [[ ! -d "$APP" ]]; then
   exit 1
 fi
 
-chmod +x "${APP}/scripts/pi/apply-update.sh" "${APP}/scripts/pi/install-autoupdate.sh"
+chmod +x \
+  "${APP}/scripts/pi/apply-update.sh" \
+  "${APP}/scripts/pi/install-autoupdate.sh" \
+  "${APP}/scripts/pi/fetch-github-release.sh" \
+  "${APP}/scripts/pi/bootstrap.sh" \
+  "${APP}/scripts/update-from-zip.sh" \
+  "${APP}/scripts/publish-github-release.sh" 2>/dev/null || true
 
 mkdir -p "$UNIT_DIR"
 cp -f "${APP}/scripts/pi/magic-mirror.service" "$UNIT_DIR/"
 cp -f "${APP}/scripts/pi/magic-mirror-kiosk.service" "$UNIT_DIR/"
 cp -f "${APP}/scripts/pi/magic-mirror-update.service" "$UNIT_DIR/"
 cp -f "${APP}/scripts/pi/magic-mirror-update.path" "$UNIT_DIR/"
+cp -f "${APP}/scripts/pi/magic-mirror-github-fetch.service" "$UNIT_DIR/"
+cp -f "${APP}/scripts/pi/magic-mirror-github-fetch.timer" "$UNIT_DIR/"
 
 # Allow user services without an active login (Pi boot)
 if command -v loginctl >/dev/null 2>&1; then
@@ -32,6 +41,7 @@ systemctl --user daemon-reload
 systemctl --user enable --now magic-mirror.service
 systemctl --user enable --now magic-mirror-kiosk.service
 systemctl --user enable --now magic-mirror-update.path
+systemctl --user enable --now magic-mirror-github-fetch.timer
 
 # Seed stamp so the current zip is not reapplied immediately
 mkdir -p "${HOME}/.magic-mirror"
@@ -42,16 +52,14 @@ fi
 
 echo ""
 echo "Auto-update installed."
-echo "  App:    systemctl --user status magic-mirror"
-echo "  Kiosk:  systemctl --user status magic-mirror-kiosk"
-echo "  Watch:  systemctl --user status magic-mirror-update.path"
+echo "  App:     systemctl --user status magic-mirror"
+echo "  Kiosk:   systemctl --user status magic-mirror-kiosk"
+echo "  Zip watch: systemctl --user status magic-mirror-update.path"
+echo "  GitHub:  systemctl --user status magic-mirror-github-fetch.timer"
 echo ""
-echo "From now on:"
-echo "  1) Download magic_mirror_for_mac.zip from the Cursor agent Artifacts"
-echo "     (https://cursor.com/agents/bc-86e9ef9c-f832-56ef-b654-c4094f1ea8ca)"
-echo "     into ~/Downloads — do NOT use AgentStores paths."
-echo "  2) Mac:  shasum -a 256 ~/Downloads/magic_mirror_for_mac.zip"
-echo "           scp ~/Downloads/magic_mirror_for_mac.zip nick@192.168.1.144:~/"
-echo "  3) Pi:   sha256sum ~/magic_mirror_for_mac.zip"
-echo "           (auto-update runs when the hash changes; FORCE if needed)"
-echo "Logs: ~/.magic-mirror/update.log"
+echo "GitHub repo: NickGrant89/magicmirror"
+echo "Every ~30 min the Pi curls:"
+echo "  https://github.com/NickGrant89/magicmirror/releases/latest/download/magic_mirror_for_mac.zip"
+echo "Manual pull now:"
+echo "  bash ~/magic-mirror/scripts/pi/fetch-github-release.sh"
+echo "Logs: ~/.magic-mirror/update.log  and  ~/.magic-mirror/fetch.log"

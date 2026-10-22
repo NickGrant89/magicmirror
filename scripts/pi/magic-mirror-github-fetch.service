@@ -1,0 +1,9 @@
+[Unit]
+Description=Fetch Magic Mirror zip from GitHub Releases
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+ExecStart=%h/magic-mirror/scripts/pi/fetch-github-release.sh
+Nice=10

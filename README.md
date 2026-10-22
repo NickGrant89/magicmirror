@@ -42,48 +42,54 @@ cd magic-mirror
 git checkout cursor/magic-mirror-dashboard-a8ca   # if needed
 ```
 
-### 3. AFTER EVERY UPDATE
+### 3. AFTER EVERY UPDATE (GitHub)
 
-**Zip source (permanent):** download `magic_mirror_for_mac.zip` from this agent’s **Artifacts** (or Project media on the agent page) into `~/Downloads`.  
-Do **not** use `~/Library/.../AgentStores/...`.
+**Repo:** https://github.com/NickGrant89/magicmirror  
 
-Agent page: https://cursor.com/agents/bc-86e9ef9c-f832-56ef-b654-c4094f1ea8ca
+**Preferred:** the Pi polls GitHub Releases every 30 minutes and applies new zips automatically (no Mac `scp`).
 
-**One-time on the Pi** (after the first successful install of this release):
+**One-time on the Pi** (after this release is installed once):
 
 ```bash
 cd ~/magic-mirror
 bash scripts/pi/install-autoupdate.sh
 ```
 
-That installs systemd services for the app, Chromium kiosk, and a zip watcher.
+That installs the app, Chromium kiosk, zip watcher, and GitHub fetch timer.
 
-**Every update after that:**
+**Publish a new release** (Mac, with [GitHub CLI](https://cli.github.com/) logged in):
 
 ```bash
-# Mac — after downloading magic_mirror_for_mac.zip to ~/Downloads
-shasum -a 256 ~/Downloads/magic_mirror_for_mac.zip
-# must match the hash printed with that release in the agent chat
-
-scp ~/Downloads/magic_mirror_for_mac.zip nick@192.168.1.144:~/
+cd /path/to/magicmirror
+bash scripts/publish-github-release.sh v16.4-github
 ```
 
+**Manual pull on the Pi** (optional — timer also does this):
+
 ```bash
-# Pi — confirm hash, then let auto-update run (or FORCE if it skips)
-cd ~
-sha256sum ~/magic_mirror_for_mac.zip
+bash ~/magic-mirror/scripts/pi/fetch-github-release.sh
 tail -f ~/.magic-mirror/update.log
-# if unchanged / skipped:
+```
+
+Or one-shot:
+
+```bash
+curl -fsSL -o ~/magic_mirror_for_mac.zip \
+  https://github.com/NickGrant89/magicmirror/releases/latest/download/magic_mirror_for_mac.zip
 MAGIC_MIRROR_FORCE=1 bash ~/magic-mirror/scripts/pi/apply-update.sh
 ```
 
-The Pi rebuilds, restores `.env.local`, and restarts the kiosk. Top-right badge should show the new version (e.g. `v16.3.1`).
+**Fallback** (no GitHub release yet): download `magic_mirror_for_mac.zip` from the Cursor agent Artifacts into `~/Downloads`, then:
+
+```bash
+scp ~/Downloads/magic_mirror_for_mac.zip nick@192.168.1.144:~/
+```
 
 **First install / recovery** (if `~/magic-mirror` is missing):
 
 ```bash
-# Mac: same download + shasum + scp as above
-# Pi:
+curl -fsSL -o ~/magic_mirror_for_mac.zip \
+  https://github.com/NickGrant89/magicmirror/releases/latest/download/magic_mirror_for_mac.zip
 cd ~ && rm -rf magic-mirror && unzip -o magic_mirror_for_mac.zip -d magic-mirror
 # flatten if nested as magic_mirror_for_mac/, then:
 cd ~/magic-mirror && npm install && npm run build
