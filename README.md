@@ -61,7 +61,7 @@ That installs the app, Chromium kiosk, zip watcher, and GitHub fetch timer.
 
 ```bash
 cd /path/to/magicmirror
-bash scripts/publish-github-release.sh v16.4-github
+bash scripts/publish-github-release.sh v16.5-signals
 ```
 
 **Manual pull on the Pi** (optional — timer also does this):
