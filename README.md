@@ -42,7 +42,12 @@ cd magic-mirror
 git checkout cursor/magic-mirror-dashboard-a8ca   # if needed
 ```
 
-### 3. AFTER EVERY UPDATE (auto)
+### 3. AFTER EVERY UPDATE
+
+**Zip source (permanent):** download `magic_mirror_for_mac.zip` from this agent’s **Artifacts** (or Project media on the agent page) into `~/Downloads`.  
+Do **not** use `~/Library/.../AgentStores/...`.
+
+Agent page: https://cursor.com/agents/bc-86e9ef9c-f832-56ef-b654-c4094f1ea8ca
 
 **One-time on the Pi** (after the first successful install of this release):
 
@@ -53,28 +58,36 @@ bash scripts/pi/install-autoupdate.sh
 
 That installs systemd services for the app, Chromium kiosk, and a zip watcher.
 
-**Every update after that — Mac only:**
+**Every update after that:**
 
 ```bash
-scp "/Users/Nick/Library/Application Support/Cursor/AgentStores/cursor_agent_stores/bc-49af559d-8e32-415f-8dc0-796abe65ea0f/files/artifacts/magic_mirror_for_mac.zip" nick@192.168.1.144:~/
+# Mac — after downloading magic_mirror_for_mac.zip to ~/Downloads
+shasum -a 256 ~/Downloads/magic_mirror_for_mac.zip
+# must match the hash printed with the release (current v16.3.1 starts with aef63c)
+
+scp ~/Downloads/magic_mirror_for_mac.zip nick@192.168.1.144:~/
 ```
 
-The Pi detects the new zip, rebuilds, restores `.env.local`, and restarts the kiosk. Check progress with:
-
 ```bash
+# Pi — confirm hash, then let auto-update run (or FORCE if it skips)
+cd ~
+sha256sum ~/magic_mirror_for_mac.zip
 tail -f ~/.magic-mirror/update.log
-# top-right should show the new version tag, e.g. v13 auto
+# if unchanged / skipped:
+MAGIC_MIRROR_FORCE=1 bash ~/magic-mirror/scripts/pi/apply-update.sh
 ```
 
-**Manual update** (if auto-update is not installed yet):
+The Pi rebuilds, restores `.env.local`, and restarts the kiosk. Top-right badge should show the new version (e.g. `v16.3.1`).
+
+**First install / recovery** (if `~/magic-mirror` is missing):
 
 ```bash
-scp "…/magic_mirror_for_mac.zip" nick@192.168.1.144:~/
-# on Pi:
-bash ~/magic-mirror/scripts/pi/apply-update.sh
-# or first install:
+# Mac: same download + shasum + scp as above
+# Pi:
 cd ~ && rm -rf magic-mirror && unzip -o magic_mirror_for_mac.zip -d magic-mirror
-# flatten if needed, then npm install && npm run build && bash scripts/pi/install-autoupdate.sh
+# flatten if nested as magic_mirror_for_mac/, then:
+cd ~/magic-mirror && npm install && npm run build
+bash scripts/pi/install-autoupdate.sh
 ```
 
 ### 4. If you insist on building on the Pi

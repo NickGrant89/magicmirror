@@ -10,8 +10,9 @@ APP="${HOME}/magic-mirror"
 PORT=43127
 
 if [[ ! -f "$ZIP" ]]; then
-  echo "Missing $ZIP — copy it from your Mac first:"
-  echo "  scp \"…/magic_mirror_for_mac.zip\" nick@192.168.1.144:~/"
+  echo "Missing $ZIP — download magic_mirror_for_mac.zip from Cursor agent Artifacts"
+  echo "into ~/Downloads on the Mac, then:"
+  echo "  scp ~/Downloads/magic_mirror_for_mac.zip nick@192.168.1.144:~/"
   exit 1
 fi
 

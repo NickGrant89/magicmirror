@@ -9,7 +9,8 @@ ZIP="${HOME}/magic_mirror_for_mac.zip"
 APP="${HOME}/magic-mirror"
 
 if [[ ! -f "$ZIP" ]]; then
-  echo "Missing $ZIP — scp the zip to your Pi home first."
+  echo "Missing $ZIP — download magic_mirror_for_mac.zip from Cursor agent Artifacts,"
+  echo "then: scp ~/Downloads/magic_mirror_for_mac.zip nick@192.168.1.144:~/"
   exit 1
 fi
 
