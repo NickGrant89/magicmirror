@@ -38,11 +38,6 @@ export function PhotoFrame({ compact = false }: { compact?: boolean }) {
     <section className="mirror-fade-in-delay-2 flex h-full min-h-0 flex-col">
       <div className="flex items-baseline justify-between gap-2">
         <SectionLabel compact={compact}>Photos</SectionLabel>
-        {data?.albumName ? (
-          <p className="truncate text-[0.65rem] tracking-[0.12em] text-white/35 uppercase">
-            {data.albumName}
-          </p>
-        ) : null}
       </div>
 
       <div
@@ -65,24 +60,12 @@ export function PhotoFrame({ compact = false }: { compact?: boolean }) {
             <img
               key={current.id}
               src={current.url}
-              alt={current.caption ?? data?.albumName ?? "Album photo"}
+              alt=""
               className={cn(
                 "absolute inset-0 size-full object-cover transition-opacity duration-500 ease-out",
                 fade ? "opacity-100" : "opacity-0",
               )}
             />
-            <div className="pointer-events-none absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/70 via-black/25 to-transparent px-3 pb-2.5 pt-8">
-              <div className="flex items-end justify-between gap-2">
-                <p className="truncate text-xs text-white/80">
-                  {current.caption ?? data?.albumName}
-                </p>
-                {photos.length > 1 ? (
-                  <p className="shrink-0 text-[0.65rem] tabular-nums text-white/45">
-                    {safeIndex + 1}/{photos.length}
-                  </p>
-                ) : null}
-              </div>
-            </div>
             {photos.length > 1 ? (
               <div className="absolute bottom-2 left-1/2 flex -translate-x-1/2 gap-1">
                 {photos.slice(0, 8).map((photo, i) => (
@@ -105,16 +88,6 @@ export function PhotoFrame({ compact = false }: { compact?: boolean }) {
           </div>
         )}
       </div>
-
-      {data?.source === "mock" ? (
-        <p className="mirror-footnote mt-1.5 text-[0.65rem] tracking-wide text-white/25">
-          Mock · Apple Shared Album hook ready
-        </p>
-      ) : data?.source === "live" ? (
-        <p className="mirror-footnote mt-1.5 text-[0.65rem] tracking-wide text-white/25">
-          Live · iCloud Shared Album
-        </p>
-      ) : null}
     </section>
   );
 }

@@ -37,6 +37,14 @@ export type CryptoQuote = {
   signal?: "BUY" | "SELL" | "HOLD";
 };
 
+export type WeatherDay = {
+  date: string;
+  weatherCode: number;
+  summary: string;
+  highC: number;
+  lowC: number;
+};
+
 export type WeatherSnapshot = {
   locationLabel: string;
   temperatureC: number;
@@ -46,6 +54,8 @@ export type WeatherSnapshot = {
   summary: string;
   highC: number;
   lowC: number;
+  /** Up to 7 daily forecasts (today first when live). */
+  forecast?: WeatherDay[];
 };
 
 export type CalendarPayload = {
