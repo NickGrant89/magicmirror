@@ -45,9 +45,14 @@ fi
 
 mv -f "$TMP" "$ZIP"
 echo "Updated $ZIP → $NEW_HASH (was ${OLD_HASH:-none})"
-# Path unit should fire; nudge apply-update if it doesn't.
-if [[ -x "${HOME}/magic-mirror/scripts/pi/apply-update.sh" ]]; then
-  sleep 2
-  # Run from / so apply-update never inherits a deleted cwd
-  (cd / && MAGIC_MIRROR_FORCE="${MAGIC_MIRROR_FORCE:-0}" bash "${HOME}/magic-mirror/scripts/pi/apply-update.sh") || true
+# Let magic-mirror-update.path pick this up (avoids double apply racing the build).
+# If the path unit isn't installed yet, apply once ourselves.
+sleep 2
+if systemctl --user is-enabled magic-mirror-update.path >/dev/null 2>&1; then
+  echo "Path unit enabled — apply-update will run via systemd"
+  systemctl --user start magic-mirror-update.service 2>/dev/null || true
+else
+  if [[ -x "${HOME}/magic-mirror/scripts/pi/apply-update.sh" ]]; then
+    (cd / && MAGIC_MIRROR_FORCE="${MAGIC_MIRROR_FORCE:-0}" bash "${HOME}/magic-mirror/scripts/pi/apply-update.sh") || true
+  fi
 fi
