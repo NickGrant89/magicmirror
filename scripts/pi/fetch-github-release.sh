@@ -8,7 +8,10 @@
 
 set -euo pipefail
 
-cd "$HOME" || exit 1
+# Escape deleted cwd (shell stuck inside wiped ~/magic-mirror)
+cd / >/dev/null 2>&1 || true
+export HOME="${HOME:-/home/nick}"
+cd "$HOME"
 
 REPO="${MAGIC_MIRROR_GITHUB_REPO:-NickGrant89/magicmirror}"
 ASSET="${MAGIC_MIRROR_GITHUB_ASSET:-magic_mirror_for_mac.zip}"
@@ -44,7 +47,7 @@ mv -f "$TMP" "$ZIP"
 echo "Updated $ZIP → $NEW_HASH (was ${OLD_HASH:-none})"
 # Path unit should fire; nudge apply-update if it doesn't.
 if [[ -x "${HOME}/magic-mirror/scripts/pi/apply-update.sh" ]]; then
-  # Small delay so PathModified settles
   sleep 2
-  bash "${HOME}/magic-mirror/scripts/pi/apply-update.sh" || true
+  # Run from / so apply-update never inherits a deleted cwd
+  (cd / && MAGIC_MIRROR_FORCE="${MAGIC_MIRROR_FORCE:-0}" bash "${HOME}/magic-mirror/scripts/pi/apply-update.sh") || true
 fi
