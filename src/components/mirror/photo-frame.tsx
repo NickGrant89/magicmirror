@@ -36,7 +36,7 @@ export function PhotoFrame({ compact = false }: { compact?: boolean }) {
               src={current.url}
               alt=""
               className={cn(
-                "absolute inset-0 size-full object-cover transition-opacity duration-500 ease-out",
+                "absolute inset-0 size-full object-contain object-center transition-opacity duration-500 ease-out",
                 fade ? "opacity-100" : "opacity-0",
               )}
             />
