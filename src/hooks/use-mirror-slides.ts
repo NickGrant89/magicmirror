@@ -10,6 +10,7 @@ const DEFAULT_INTERVAL_MS = Number(
 export type MirrorSlide =
   | { id: "home"; kind: "home" }
   | { id: "weather"; kind: "weather" }
+  | { id: "calendar"; kind: "calendar" }
   | { id: string; kind: "charts"; symbol: string };
 
 /**
@@ -69,6 +70,7 @@ export function useMirrorSlides(
       list.map((s) => {
         if (s.kind === "home") return "Home";
         if (s.kind === "weather") return "Weather";
+        if (s.kind === "calendar") return "Calendar";
         return s.symbol;
       }),
     [list],
@@ -91,5 +93,6 @@ export function useMirrorSlides(
 export function slideBadge(slide: MirrorSlide): string {
   if (slide.kind === "home") return "home";
   if (slide.kind === "weather") return "weather";
+  if (slide.kind === "calendar") return "calendar";
   return slide.symbol;
 }

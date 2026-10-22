@@ -2,6 +2,7 @@
 
 import { useMemo } from "react";
 import { CalendarPanel } from "@/components/mirror/calendar-panel";
+import { CalendarWeekSlide } from "@/components/mirror/calendar-week-slide";
 import { Clock } from "@/components/mirror/clock";
 import { CryptoChartSlide } from "@/components/mirror/crypto-chart-slide";
 import { CryptoPanel } from "@/components/mirror/crypto-panel";
@@ -37,6 +38,10 @@ function formatSlideRemain(ms: number) {
 
 export function MirrorBoard() {
   const calendar = usePollingJson<CalendarPayload>("/api/calendar", 60_000);
+  const calendarWeek = usePollingJson<CalendarPayload>(
+    "/api/calendar/week",
+    60_000,
+  );
   const crypto = usePollingJson<CryptoPayload>("/api/crypto", 60_000);
   const charts = usePollingJson<CryptoChartsPayload>(
     "/api/crypto/charts",
@@ -55,6 +60,7 @@ export function MirrorBoard() {
     const base: MirrorSlide[] = [
       { id: "home", kind: "home" },
       { id: "weather", kind: "weather" },
+      { id: "calendar", kind: "calendar" },
     ];
     if (chartSlides.length === 0) {
       return [
@@ -107,7 +113,7 @@ export function MirrorBoard() {
             ))}
           </div>
           <p className="truncate text-[0.6rem] tracking-[0.14em] text-white/30 uppercase">
-            9″ Pi · v16.8.1 recover · {slideBadge(slides.slide)} ·{" "}
+            9″ Pi · v16.9 calendar · {slideBadge(slides.slide)} ·{" "}
             {formatSlideRemain(slides.remainingMs)}
           </p>
         </div>
@@ -177,6 +183,12 @@ export function MirrorBoard() {
               data={weather.data}
               loading={weather.loading}
               error={weather.error}
+            />
+          ) : slides.slide.kind === "calendar" ? (
+            <CalendarWeekSlide
+              data={calendarWeek.data}
+              loading={calendarWeek.loading}
+              error={calendarWeek.error}
             />
           ) : (
             <CryptoChartSlide
