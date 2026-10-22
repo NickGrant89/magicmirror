@@ -12,7 +12,9 @@ import { NextEventCountdown } from "@/components/mirror/countdown";
 import { PhotoFrame } from "@/components/mirror/photo-frame";
 import { RadioPanel } from "@/components/mirror/radio-panel";
 import { WeatherPanel } from "@/components/mirror/weather-panel";
+import { WeatherWeekSlide } from "@/components/mirror/weather-week-slide";
 import {
+  slideBadge,
   useMirrorSlides,
   type MirrorSlide,
 } from "@/hooks/use-mirror-slides";
@@ -50,14 +52,17 @@ export function MirrorBoard() {
         symbol: s.symbol,
       }),
     );
-    // Fallback single charts placeholder until data loads
+    const base: MirrorSlide[] = [
+      { id: "home", kind: "home" },
+      { id: "weather", kind: "weather" },
+    ];
     if (chartSlides.length === 0) {
       return [
-        { id: "home", kind: "home" as const },
-        { id: "charts-loading", kind: "charts" as const, symbol: "…" },
+        ...base,
+        { id: "charts-loading", kind: "charts", symbol: "…" },
       ];
     }
-    return [{ id: "home", kind: "home" as const }, ...chartSlides];
+    return [...base, ...chartSlides];
   }, [charts.data?.symbols]);
 
   const slides = useMirrorSlides(slideDefs);
@@ -102,8 +107,7 @@ export function MirrorBoard() {
             ))}
           </div>
           <p className="truncate text-[0.6rem] tracking-[0.14em] text-white/30 uppercase">
-            9″ Pi · v16.7 echo ·{" "}
-            {slides.slide.kind === "home" ? "home" : slides.slide.symbol} ·{" "}
+            9″ Pi · v16.8 weather · {slideBadge(slides.slide)} ·{" "}
             {formatSlideRemain(slides.remainingMs)}
           </p>
         </div>
@@ -168,6 +172,12 @@ export function MirrorBoard() {
                 </div>
               </section>
             </>
+          ) : slides.slide.kind === "weather" ? (
+            <WeatherWeekSlide
+              data={weather.data}
+              loading={weather.loading}
+              error={weather.error}
+            />
           ) : (
             <CryptoChartSlide
               symbol={activeSymbol}
@@ -178,7 +188,6 @@ export function MirrorBoard() {
         </div>
       </main>
 
-      {/* Echo Show–style progress scrubber */}
       <div
         className="relative z-10 mt-2 h-0.5 w-full overflow-hidden rounded-full bg-white/10"
         aria-hidden

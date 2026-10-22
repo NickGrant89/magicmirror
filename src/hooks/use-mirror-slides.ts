@@ -9,6 +9,7 @@ const DEFAULT_INTERVAL_MS = Number(
 
 export type MirrorSlide =
   | { id: "home"; kind: "home" }
+  | { id: "weather"; kind: "weather" }
   | { id: string; kind: "charts"; symbol: string };
 
 /**
@@ -18,7 +19,8 @@ export function useMirrorSlides(
   slides: MirrorSlide[],
   intervalMs = DEFAULT_INTERVAL_MS,
 ) {
-  const list = slides.length > 0 ? slides : [{ id: "home", kind: "home" as const }];
+  const list: MirrorSlide[] =
+    slides.length > 0 ? slides : [{ id: "home", kind: "home" }];
   const [index, setIndex] = useState(0);
   const [cycleStartedAt, setCycleStartedAt] = useState(() => Date.now());
   const [now, setNow] = useState(() => Date.now());
@@ -34,7 +36,6 @@ export function useMirrorSlides(
   }, []);
 
   useEffect(() => {
-    // Keep index in range when slide list changes (e.g. charts load).
     setIndex((current) => current % list.length);
   }, [list.length]);
 
@@ -65,9 +66,11 @@ export function useMirrorSlides(
 
   const labels = useMemo(
     () =>
-      list.map((s) =>
-        s.kind === "home" ? "Home" : s.symbol,
-      ),
+      list.map((s) => {
+        if (s.kind === "home") return "Home";
+        if (s.kind === "weather") return "Weather";
+        return s.symbol;
+      }),
     [list],
   );
 
@@ -83,4 +86,10 @@ export function useMirrorSlides(
     goNext: () => goTo(index + 1),
     goTo,
   };
+}
+
+export function slideBadge(slide: MirrorSlide): string {
+  if (slide.kind === "home") return "home";
+  if (slide.kind === "weather") return "weather";
+  return slide.symbol;
 }
