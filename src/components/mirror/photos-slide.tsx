@@ -54,7 +54,8 @@ export function PhotosSlide() {
               onError={() => setImgBroken(true)}
               onLoad={() => setImgBroken(false)}
               className={cn(
-                "absolute inset-0 size-full object-cover transition-opacity duration-500 ease-out",
+                // Letterbox — never stretch/distort portrait or landscape shots
+                "absolute inset-0 size-full object-contain object-center transition-opacity duration-500 ease-out",
                 fade ? "opacity-100" : "opacity-0",
               )}
             />
