@@ -345,6 +345,37 @@
   animation: mirror-pulse-soft 4.5s ease-in-out infinite;
 }
 
+/* Echo Show–style horizontal push between screens */
+@keyframes mirror-echo-enter {
+  from {
+    opacity: 0;
+    transform: translate3d(4.5%, 0, 0);
+  }
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+@keyframes mirror-echo-exit {
+  from {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+  to {
+    opacity: 0;
+    transform: translate3d(-3.5%, 0, 0);
+  }
+}
+
+.mirror-echo-enter {
+  animation: mirror-echo-enter 0.55s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.mirror-echo-exit {
+  animation: mirror-echo-exit 0.4s ease-in both;
+}
+
 @media (prefers-reduced-motion: reduce) {
   .mirror-fade-in,
   .mirror-fade-in-delay-1,
@@ -355,7 +386,9 @@
   .mirror-aurora-b,
   .mirror-aurora-c,
   .mirror-stars,
-  .mirror-eq.is-active span {
+  .mirror-eq.is-active span,
+  .mirror-echo-enter,
+  .mirror-echo-exit {
     animation: none;
   }
 }
