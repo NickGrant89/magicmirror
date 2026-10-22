@@ -5,6 +5,7 @@ import { Clock } from "@/components/mirror/clock";
 import { SectionLabel } from "@/components/mirror/section-label";
 import { formatEventTime } from "@/lib/format";
 import type { CalendarEvent, CalendarPayload } from "@/lib/types";
+import { cn } from "@/lib/utils";
 
 function startOfLocalDay(d = new Date()) {
   const day = new Date(d);
@@ -15,14 +16,15 @@ function startOfLocalDay(d = new Date()) {
 function dayLabel(date: Date, index: number) {
   if (index === 0) return "Today";
   if (index === 1) return "Tomorrow";
-  return new Intl.DateTimeFormat(undefined, { weekday: "short" }).format(date);
+  return new Intl.DateTimeFormat(undefined, { weekday: "long" }).format(date);
 }
 
-function dayKey(date: Date) {
-  const y = date.getFullYear();
-  const m = String(date.getMonth() + 1).padStart(2, "0");
-  const d = String(date.getDate()).padStart(2, "0");
-  return `${y}-${m}-${d}`;
+function dayShort(date: Date) {
+  return new Intl.DateTimeFormat(undefined, {
+    weekday: "short",
+    day: "numeric",
+    month: "short",
+  }).format(date);
 }
 
 function overlapsDay(event: CalendarEvent, dayStart: Date, dayEnd: Date) {
@@ -50,16 +52,19 @@ export function CalendarWeekSlide({
       dayEnd.setDate(dayEnd.getDate() + 1);
       const dayEvents = events
         .filter((ev) => overlapsDay(ev, dayStart, dayEnd))
-        .slice(0, 5);
+        .slice(0, 6);
       return {
-        key: dayKey(dayStart),
+        key: dayStart.toISOString(),
+        index: i,
         label: dayLabel(dayStart, i),
-        dateNum: dayStart.getDate(),
+        short: dayShort(dayStart),
         events: dayEvents,
       };
     });
   }, [data?.events]);
 
+  const today = columns[0];
+  const rest = columns.slice(1);
   const total = data?.events?.length ?? 0;
 
   return (
@@ -72,7 +77,9 @@ export function CalendarWeekSlide({
               ? "Loading events…"
               : error && !data
                 ? "Calendar unavailable"
-                : `${total} event${total === 1 ? "" : "s"} this week`}
+                : data?.source === "live"
+                  ? `${total} event${total === 1 ? "" : "s"} · iCloud`
+                  : `${total} event${total === 1 ? "" : "s"} · demo data (set Apple ID on Pi for live)`}
           </p>
         </div>
         <div className="origin-bottom-right scale-90 sm:scale-100">
@@ -80,42 +87,70 @@ export function CalendarWeekSlide({
         </div>
       </div>
 
-      <ul className="grid min-h-0 flex-1 grid-cols-7 gap-1.5 sm:gap-2">
-        {columns.map((col) => (
-          <li
-            key={col.key}
-            className="flex min-h-0 flex-col rounded-2xl border border-white/10 bg-white/[0.04] px-1.5 py-2 sm:px-2"
-          >
-            <p className="text-center font-display text-[0.65rem] tracking-[0.12em] text-white/65 uppercase sm:text-xs">
-              {col.label}
-            </p>
-            <p className="mt-0.5 text-center font-display text-lg text-white tabular-nums sm:text-xl">
-              {col.dateNum}
-            </p>
-            <ul className="mt-2 min-h-0 flex-1 space-y-1.5 overflow-hidden">
-              {col.events.length === 0 ? (
-                <li className="text-center text-[0.6rem] text-white/30">—</li>
-              ) : (
-                col.events.map((ev) => (
-                  <li key={`${ev.id}-${ev.startsAt}`} className="min-w-0">
-                    <p className="truncate text-[0.62rem] leading-tight text-white/85 sm:text-[0.7rem]">
-                      {ev.title}
-                    </p>
-                    <p className="truncate text-[0.55rem] text-white/40 tabular-nums">
-                      {formatEventTime(ev.startsAt, ev.allDay)}
-                    </p>
-                  </li>
-                ))
-              )}
-            </ul>
-          </li>
-        ))}
-      </ul>
+      <div className="grid min-h-0 flex-1 grid-cols-1 gap-2 overflow-hidden sm:grid-cols-[1.15fr_1.85fr]">
+        {/* Today — large */}
+        <section className="flex min-h-0 flex-col rounded-2xl border border-white/15 bg-gradient-to-b from-white/10 to-white/[0.03] px-3 py-3">
+          <div className="flex items-baseline justify-between gap-2">
+            <p className="font-display text-xl text-white">{today?.label}</p>
+            <p className="text-sm text-white/45">{today?.short}</p>
+          </div>
+          <ul className="mt-3 min-h-0 flex-1 space-y-2 overflow-y-auto pr-1">
+            {(today?.events.length ?? 0) === 0 ? (
+              <li className="text-sm text-white/40">Nothing scheduled</li>
+            ) : (
+              today?.events.map((ev) => (
+                <li
+                  key={`${ev.id}-${ev.startsAt}`}
+                  className="rounded-xl border border-white/10 bg-black/20 px-2.5 py-2"
+                >
+                  <p className="truncate text-base text-white/90">{ev.title}</p>
+                  <p className="mt-0.5 text-sm text-white/45 tabular-nums">
+                    {formatEventTime(ev.startsAt, ev.allDay)}
+                    {ev.location ? ` · ${ev.location}` : ""}
+                  </p>
+                </li>
+              ))
+            )}
+          </ul>
+        </section>
 
-      {data ? (
-        <p className="shrink-0 text-[0.55rem] tracking-wide text-white/25">
-          {data.source === "live" ? "Live · iCloud" : "Mock calendar"}
-          {data.note ? ` · ${data.note}` : ""}
+        {/* Rest of week */}
+        <ul className="grid min-h-0 grid-cols-2 gap-2 overflow-hidden sm:grid-cols-3">
+          {rest.map((col) => (
+            <li
+              key={col.key}
+              className={cn(
+                "flex min-h-0 flex-col rounded-2xl border border-white/10 bg-white/[0.04] px-2.5 py-2",
+              )}
+            >
+              <p className="font-display text-sm tracking-wide text-white/80">
+                {col.label}
+              </p>
+              <p className="text-[0.7rem] text-white/40">{col.short}</p>
+              <ul className="mt-2 min-h-0 flex-1 space-y-1.5 overflow-hidden">
+                {col.events.length === 0 ? (
+                  <li className="text-[0.7rem] text-white/30">Clear</li>
+                ) : (
+                  col.events.map((ev) => (
+                    <li key={`${ev.id}-${ev.startsAt}`} className="min-w-0">
+                      <p className="truncate text-[0.8rem] leading-tight text-white/85">
+                        {ev.title}
+                      </p>
+                      <p className="truncate text-[0.65rem] text-white/40 tabular-nums">
+                        {formatEventTime(ev.startsAt, ev.allDay)}
+                      </p>
+                    </li>
+                  ))
+                )}
+              </ul>
+            </li>
+          ))}
+        </ul>
+      </div>
+
+      {data?.note ? (
+        <p className="shrink-0 truncate text-[0.55rem] tracking-wide text-white/25">
+          {data.note}
         </p>
       ) : null}
     </div>
