@@ -1,9 +1,10 @@
 "use client";
 
+import { useMemo } from "react";
 import { CalendarPanel } from "@/components/mirror/calendar-panel";
 import { Clock } from "@/components/mirror/clock";
+import { CryptoChartSlide } from "@/components/mirror/crypto-chart-slide";
 import { CryptoPanel } from "@/components/mirror/crypto-panel";
-import { CryptoSignalsSlide } from "@/components/mirror/crypto-signals-slide";
 import { GuestWifiCard } from "@/components/mirror/guest-wifi-card";
 import { MirrorAtmosphere } from "@/components/mirror/mirror-atmosphere";
 import { NewsPanel } from "@/components/mirror/news-panel";
@@ -11,8 +12,12 @@ import { NextEventCountdown } from "@/components/mirror/countdown";
 import { PhotoFrame } from "@/components/mirror/photo-frame";
 import { RadioPanel } from "@/components/mirror/radio-panel";
 import { WeatherPanel } from "@/components/mirror/weather-panel";
-import { useMirrorSlides } from "@/hooks/use-mirror-slides";
+import {
+  useMirrorSlides,
+  type MirrorSlide,
+} from "@/hooks/use-mirror-slides";
 import { usePollingJson } from "@/hooks/use-polling-json";
+import type { CryptoChartsPayload } from "@/lib/crypto-charts";
 import type {
   CalendarPayload,
   CryptoPayload,
@@ -25,14 +30,43 @@ function formatSlideRemain(ms: number) {
   const mins = Math.floor(totalSec / 60);
   const secs = totalSec % 60;
   if (mins <= 0) return `${secs}s`;
-  return `${mins}m`;
+  return `${mins}m ${secs}s`;
 }
 
 export function MirrorBoard() {
   const calendar = usePollingJson<CalendarPayload>("/api/calendar", 60_000);
   const crypto = usePollingJson<CryptoPayload>("/api/crypto", 60_000);
+  const charts = usePollingJson<CryptoChartsPayload>(
+    "/api/crypto/charts",
+    60_000,
+  );
   const weather = usePollingJson<WeatherPayload>("/api/weather", 15 * 60_000);
-  const slides = useMirrorSlides();
+
+  const slideDefs: MirrorSlide[] = useMemo(() => {
+    const chartSlides: MirrorSlide[] = (charts.data?.symbols ?? []).map(
+      (s) => ({
+        id: `charts-${s.symbol}`,
+        kind: "charts" as const,
+        symbol: s.symbol,
+      }),
+    );
+    // Fallback single charts placeholder until data loads
+    if (chartSlides.length === 0) {
+      return [
+        { id: "home", kind: "home" as const },
+        { id: "charts-loading", kind: "charts" as const, symbol: "…" },
+      ];
+    }
+    return [{ id: "home", kind: "home" as const }, ...chartSlides];
+  }, [charts.data?.symbols]);
+
+  const slides = useMirrorSlides(slideDefs);
+
+  const chartSlide =
+    slides.slide.kind === "charts" ? slides.slide : null;
+  const activeSymbol = chartSlide
+    ? (charts.data?.symbols.find((s) => s.symbol === chartSlide.symbol) ?? null)
+    : null;
 
   return (
     <div className="mirror-shell relative flex h-dvh max-h-dvh flex-col overflow-hidden px-4 py-3 text-white md:px-6 md:py-4">
@@ -43,29 +77,33 @@ export function MirrorBoard() {
           type="button"
           onClick={slides.goNext}
           className="text-left"
-          aria-label="Switch mirror menu"
+          aria-label="Next mirror screen"
         >
           <p className="font-display text-[0.7rem] tracking-[0.32em] text-white/65 uppercase">
             Magic Mirror
           </p>
         </button>
-        <div className="flex items-center gap-3">
-          <div className="flex items-center gap-1.5" aria-hidden>
-            {(["home", "signals"] as const).map((id, i) => (
+        <div className="flex min-w-0 items-center gap-3">
+          <div className="hidden items-center gap-1 sm:flex" aria-hidden>
+            {slides.labels.map((label, i) => (
               <button
-                key={id}
+                key={`${label}-${i}`}
                 type="button"
                 onClick={() => slides.goTo(i)}
                 className={cn(
-                  "size-1.5 rounded-full transition",
-                  slides.index === i ? "bg-white" : "bg-white/30",
+                  "rounded-full transition",
+                  slides.index === i
+                    ? "h-1.5 w-4 bg-white"
+                    : "size-1.5 bg-white/30",
                 )}
-                aria-label={`Show ${id} menu`}
+                aria-label={`Show ${label}`}
+                title={label}
               />
             ))}
           </div>
-          <p className="text-[0.6rem] tracking-[0.18em] text-white/30 uppercase">
-            9″ Pi · v16.6 slides · {slides.slide} ·{" "}
+          <p className="truncate text-[0.6rem] tracking-[0.14em] text-white/30 uppercase">
+            9″ Pi · v16.7 echo ·{" "}
+            {slides.slide.kind === "home" ? "home" : slides.slide.symbol} ·{" "}
             {formatSlideRemain(slides.remainingMs)}
           </p>
         </div>
@@ -73,12 +111,13 @@ export function MirrorBoard() {
 
       <main className="relative z-10 mx-auto flex min-h-0 w-full max-w-6xl flex-1 flex-col overflow-hidden">
         <div
+          key={slides.slide.id}
           className={cn(
-            "flex min-h-0 flex-1 flex-col gap-3 transition-opacity duration-500 ease-out",
-            slides.fade ? "opacity-100" : "opacity-0",
+            "flex min-h-0 flex-1 flex-col gap-3",
+            slides.animClass,
           )}
         >
-          {slides.slide === "home" ? (
+          {slides.slide.kind === "home" ? (
             <>
               <section className="grid shrink-0 grid-cols-1 items-end gap-3 sm:grid-cols-[1.2fr_1fr_1.05fr]">
                 <Clock />
@@ -130,14 +169,25 @@ export function MirrorBoard() {
               </section>
             </>
           ) : (
-            <CryptoSignalsSlide
-              data={crypto.data}
-              loading={crypto.loading}
-              error={crypto.error}
+            <CryptoChartSlide
+              symbol={activeSymbol}
+              loading={charts.loading}
+              error={charts.error}
             />
           )}
         </div>
       </main>
+
+      {/* Echo Show–style progress scrubber */}
+      <div
+        className="relative z-10 mt-2 h-0.5 w-full overflow-hidden rounded-full bg-white/10"
+        aria-hidden
+      >
+        <div
+          className="h-full rounded-full bg-white/70 transition-[width] duration-200 ease-linear"
+          style={{ width: `${slides.progress * 100}%` }}
+        />
+      </div>
     </div>
   );
 }

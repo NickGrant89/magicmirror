@@ -1,60 +1,84 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
+/** Echo Show–style default: rotate screens about every 30s. */
 const DEFAULT_INTERVAL_MS = Number(
-  process.env.NEXT_PUBLIC_MIRROR_SLIDE_INTERVAL_MS ?? String(15 * 60_000),
+  process.env.NEXT_PUBLIC_MIRROR_SLIDE_INTERVAL_MS ?? String(30_000),
 );
 
-export const MIRROR_SLIDES = ["home", "signals"] as const;
-export type MirrorSlideId = (typeof MIRROR_SLIDES)[number];
+export type MirrorSlide =
+  | { id: "home"; kind: "home" }
+  | { id: string; kind: "charts"; symbol: string };
 
 /**
- * Auto-advances between mirror menus (home ↔ signals).
- * Default interval: 15 minutes.
+ * Auto-advances mirror screens with an Echo-style progress fill.
  */
-export function useMirrorSlides(intervalMs = DEFAULT_INTERVAL_MS) {
+export function useMirrorSlides(
+  slides: MirrorSlide[],
+  intervalMs = DEFAULT_INTERVAL_MS,
+) {
+  const list = slides.length > 0 ? slides : [{ id: "home", kind: "home" as const }];
   const [index, setIndex] = useState(0);
-  const [fade, setFade] = useState(true);
   const [cycleStartedAt, setCycleStartedAt] = useState(() => Date.now());
   const [now, setNow] = useState(() => Date.now());
+  const [animClass, setAnimClass] = useState("mirror-echo-enter");
 
-  const safeInterval = Math.max(30_000, intervalMs);
-  const slide = MIRROR_SLIDES[index % MIRROR_SLIDES.length];
+  const safeInterval = Math.max(8_000, intervalMs);
+  const safeIndex = ((index % list.length) + list.length) % list.length;
+  const slide = list[safeIndex]!;
 
   useEffect(() => {
-    const tick = window.setInterval(() => setNow(Date.now()), 1000);
+    const tick = window.setInterval(() => setNow(Date.now()), 250);
     return () => window.clearInterval(tick);
   }, []);
 
   useEffect(() => {
+    // Keep index in range when slide list changes (e.g. charts load).
+    setIndex((current) => current % list.length);
+  }, [list.length]);
+
+  useEffect(() => {
     const id = window.setInterval(() => {
-      setFade(false);
+      setAnimClass("mirror-echo-exit");
       window.setTimeout(() => {
-        setIndex((current) => (current + 1) % MIRROR_SLIDES.length);
+        setIndex((current) => (current + 1) % list.length);
         setCycleStartedAt(Date.now());
-        setFade(true);
-      }, 480);
+        setAnimClass("mirror-echo-enter");
+      }, 420);
     }, safeInterval);
     return () => window.clearInterval(id);
-  }, [safeInterval]);
+  }, [safeInterval, list.length]);
 
   const goTo = (next: number) => {
-    setFade(false);
+    setAnimClass("mirror-echo-exit");
     window.setTimeout(() => {
-      setIndex(((next % MIRROR_SLIDES.length) + MIRROR_SLIDES.length) % MIRROR_SLIDES.length);
+      setIndex(((next % list.length) + list.length) % list.length);
       setCycleStartedAt(Date.now());
-      setFade(true);
+      setAnimClass("mirror-echo-enter");
     }, 280);
   };
 
-  const remainingMs = Math.max(0, safeInterval - (now - cycleStartedAt));
+  const elapsed = now - cycleStartedAt;
+  const remainingMs = Math.max(0, safeInterval - elapsed);
+  const progress = Math.min(1, Math.max(0, elapsed / safeInterval));
+
+  const labels = useMemo(
+    () =>
+      list.map((s) =>
+        s.kind === "home" ? "Home" : s.symbol,
+      ),
+    [list],
+  );
 
   return {
     slide,
-    index: index % MIRROR_SLIDES.length,
-    fade,
+    index: safeIndex,
+    count: list.length,
+    labels,
+    animClass,
     remainingMs,
+    progress,
     intervalMs: safeInterval,
     goNext: () => goTo(index + 1),
     goTo,
