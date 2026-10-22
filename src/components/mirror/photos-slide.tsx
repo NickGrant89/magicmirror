@@ -44,7 +44,7 @@ export function PhotosSlide() {
       </div>
 
       <div className="relative min-h-0 flex-1 overflow-hidden rounded-2xl border border-white/10 bg-black/60">
-        {showImage ? (
+        {showImage && current ? (
           <>
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
