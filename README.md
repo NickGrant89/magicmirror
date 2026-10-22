@@ -46,7 +46,7 @@ git checkout cursor/magic-mirror-dashboard-a8ca   # if needed
 
 **Repo:** https://github.com/NickGrant89/magicmirror  
 
-**Preferred:** the Pi polls GitHub Releases every 30 minutes and applies new zips automatically (no Mac `scp`).
+**Preferred:** the Pi polls GitHub Releases about every **2 minutes** and applies new zips automatically (no Mac `scp`). That is as close to “instant” as a home Pi gets without a public webhook URL. Overlapping applies are serialized with `~/.magic-mirror/apply.lock`.
 
 **One-time on the Pi** (after this release is installed once):
 

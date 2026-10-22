@@ -54,6 +54,6 @@ echo "==> Enabling GitHub auto-update timer"
 bash "${APP}/scripts/pi/install-autoupdate.sh" || true
 
 echo ""
-echo "Done. Badge should mention v16.8+ / weather."
-echo "Logs: ~/.magic-mirror/update.log"
+echo "Done. GitHub poll timer is every ~2 min (see magic-mirror-github-fetch.timer)."
+echo "Logs: ~/.magic-mirror/update.log  and  ~/.magic-mirror/fetch.log"
 echo "Always run updates from:  cd / && cd ~"
