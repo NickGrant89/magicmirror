@@ -63,7 +63,7 @@ That installs systemd services for the app, Chromium kiosk, and a zip watcher.
 ```bash
 # Mac — after downloading magic_mirror_for_mac.zip to ~/Downloads
 shasum -a 256 ~/Downloads/magic_mirror_for_mac.zip
-# must match the hash printed with the release (current v16.3.1 starts with aef63c)
+# must match the hash printed with that release in the agent chat
 
 scp ~/Downloads/magic_mirror_for_mac.zip nick@192.168.1.144:~/
 ```
