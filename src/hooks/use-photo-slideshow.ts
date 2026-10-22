@@ -30,6 +30,15 @@ export function usePhotoSlideshow() {
     return () => clearInterval(id);
   }, [photos.length]);
 
+  // Reset index if album shrinks after a refresh
+  useEffect(() => {
+    if (photos.length === 0) {
+      setIndex(0);
+      return;
+    }
+    setIndex((current) => current % photos.length);
+  }, [photos.length]);
+
   return {
     data,
     loading,

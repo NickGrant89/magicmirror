@@ -54,6 +54,14 @@ function toIso(time: ICAL.Time | null | undefined): string | undefined {
   }
 }
 
+/** All-day iCal dates are timezone-naive; pin to local noon so UK days don't shift. */
+function allDayLocalIso(time: ICAL.Time): string {
+  const y = time.year;
+  const m = time.month; // 1–12
+  const d = time.day;
+  return new Date(y, m - 1, d, 12, 0, 0).toISOString();
+}
+
 function parseEventsFromIcal(
   data: string,
   calendarName: string,
@@ -72,11 +80,23 @@ function parseEventsFromIcal(
   for (const vevent of vevents) {
     try {
       const event = new ICAL.Event(vevent);
-      const startsAt = toIso(event.startDate);
+      const isAllDay = Boolean(event.startDate?.isDate);
+      const startsAt = event.startDate
+        ? isAllDay
+          ? allDayLocalIso(event.startDate)
+          : toIso(event.startDate)
+        : undefined;
       if (!startsAt) continue;
-      const endsAt =
-        toIso(event.endDate) ??
-        new Date(new Date(startsAt).getTime() + 60 * 60 * 1000).toISOString();
+      let endsAt: string;
+      if (event.endDate) {
+        endsAt = isAllDay
+          ? allDayLocalIso(event.endDate)
+          : (toIso(event.endDate) ?? startsAt);
+      } else {
+        endsAt = new Date(
+          new Date(startsAt).getTime() + 60 * 60 * 1000,
+        ).toISOString();
+      }
       const location = event.location?.trim() || undefined;
       const title = event.summary?.trim() || "Untitled";
       const uid = event.uid || `${calendarName}-${startsAt}-${title}`;
@@ -86,7 +106,7 @@ function parseEventsFromIcal(
         startsAt,
         endsAt,
         location,
-        allDay: Boolean(event.startDate?.isDate),
+        allDay: isAllDay,
       });
     } catch {
       // skip malformed event
