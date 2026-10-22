@@ -6,6 +6,8 @@ export const CHART_INTERVALS = [
   { id: "1h", label: "1h", binance: "1h", limit: 72 },
   { id: "4h", label: "4h", binance: "4h", limit: 42 },
   { id: "1d", label: "1D", binance: "1d", limit: 30 },
+  /** Weekly candles — hero chart on Echo coin tabs */
+  { id: "1w", label: "1W", binance: "1w", limit: 52 },
 ] as const;
 
 export type ChartIntervalId = (typeof CHART_INTERVALS)[number]["id"];
