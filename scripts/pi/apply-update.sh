@@ -4,8 +4,11 @@
 
 set -euo pipefail
 
+# Escape deleted cwd (shell stuck inside wiped ~/magic-mirror), then go home.
 # Never stay inside ~/magic-mirror — this script deletes and rebuilds that folder.
-cd "$HOME" || exit 1
+cd / >/dev/null 2>&1 || true
+export HOME="${HOME:-/home/nick}"
+cd "$HOME"
 
 ZIP="${HOME}/magic_mirror_for_mac.zip"
 APP="${HOME}/magic-mirror"
@@ -120,11 +123,20 @@ cp -f "${APP}/scripts/pi/magic-mirror.service" "$UNIT_DIR/"
 cp -f "${APP}/scripts/pi/magic-mirror-kiosk.service" "$UNIT_DIR/"
 cp -f "${APP}/scripts/pi/magic-mirror-update.service" "$UNIT_DIR/"
 cp -f "${APP}/scripts/pi/magic-mirror-update.path" "$UNIT_DIR/"
-chmod +x "${APP}/scripts/pi/apply-update.sh"
+cp -f "${APP}/scripts/pi/magic-mirror-github-fetch.service" "$UNIT_DIR/" 2>/dev/null || true
+cp -f "${APP}/scripts/pi/magic-mirror-github-fetch.timer" "$UNIT_DIR/" 2>/dev/null || true
+chmod +x \
+  "${APP}/scripts/pi/apply-update.sh" \
+  "${APP}/scripts/pi/fetch-github-release.sh" \
+  "${APP}/scripts/pi/recover-from-github.sh" \
+  "${APP}/scripts/pi/install-autoupdate.sh" 2>/dev/null || true
 systemctl --user daemon-reload
+systemctl --user enable --now magic-mirror-update.path 2>/dev/null || true
+systemctl --user enable --now magic-mirror-github-fetch.timer 2>/dev/null || true
 
 echo "Build OK — restarting services"
 systemctl --user restart magic-mirror.service
 sleep 3
 systemctl --user restart magic-mirror-kiosk.service || true
 echo "Done $(date -Is)"
+echo "Tip: next time run updates from  cd / && cd ~  (not from inside magic-mirror)"
