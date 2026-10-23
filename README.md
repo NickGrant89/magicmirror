@@ -55,7 +55,7 @@ cd ~/magic-mirror
 bash scripts/pi/install-autoupdate.sh
 ```
 
-That installs the app, Chromium kiosk, zip watcher, and GitHub fetch timer.
+That enables linger (`loginctl enable-linger`), the app + Chromium kiosk on boot, the zip watcher, and the GitHub fetch timer (~2 min poll). After reboot the kiosk waits for `:0` and `http://127.0.0.1:43127` before opening Chromium.
 
 **Publish a new release** (Mac, with [GitHub CLI](https://cli.github.com/) logged in):
 
