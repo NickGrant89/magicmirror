@@ -154,7 +154,7 @@ Tips:
 | Widget | Source |
 | --- | --- |
 | Clock | Live (browser local time) |
-| Weather | Live via [Open-Meteo](https://open-meteo.com/) (no key). Override location with `MIRROR_*` env vars. Falls back to mock if the API fails. |
+| Weather | Live via [Open-Meteo](https://open-meteo.com/) (no key). Default location **Luton, UK** (`51.8787`, `-0.4200`). Override with `MIRROR_*` env vars. Falls back to mock if the API fails. |
 | Crypto | Live via [CoinGecko](https://www.coingecko.com/) public API (USD treated as USDT). Falls back to mock if rate-limited/offline. |
 | Radio | Live [Capital XTRA](https://www.capitalxtra.com/) stream (play/pause). Override with `NEXT_PUBLIC_RADIO_*`. |
 | Guest Wi‑Fi | Live QR + SSID/password card (`DIGI-Guest` by default). Override with `NEXT_PUBLIC_WIFI_*`. |

@@ -27,9 +27,10 @@ export const mirrorConfig = {
     clientId: process.env.BLINK_CLIENT_ID ?? "",
   },
   weather: {
-    latitude: Number(process.env.MIRROR_LATITUDE ?? "51.5074"),
-    longitude: Number(process.env.MIRROR_LONGITUDE ?? "-0.1278"),
-    locationLabel: process.env.MIRROR_LOCATION_LABEL ?? "London",
+    /** Luton, UK — override with MIRROR_* env vars if needed */
+    latitude: Number(process.env.MIRROR_LATITUDE ?? "51.8787"),
+    longitude: Number(process.env.MIRROR_LONGITUDE ?? "-0.4200"),
+    locationLabel: process.env.MIRROR_LOCATION_LABEL ?? "Luton",
   },
   photos: {
     intervalMs: Number(process.env.NEXT_PUBLIC_PHOTO_INTERVAL_MS ?? "12000"),
