@@ -130,7 +130,7 @@ export function mockDoorbellEvent(): DoorbellEvent {
 
 export function mockWeather(): WeatherSnapshot {
   return {
-    locationLabel: "London",
+    locationLabel: "Luton",
     temperatureC: 12,
     feelsLikeC: 10,
     weatherCode: 2,
