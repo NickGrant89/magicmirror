@@ -1,11 +1,13 @@
 #!/usr/bin/env bash
 # One-time Pi setup: systemd user services for app, kiosk, zip watcher,
-# and optional GitHub Releases poller.
-# Run from inside ~/magic-mirror after first install:
-#   bash scripts/pi/install-autoupdate.sh
+# and GitHub Releases poller — all enabled so they survive reboot.
+# Run from anywhere after first install:
+#   bash ~/magic-mirror/scripts/pi/install-autoupdate.sh
 
 set -euo pipefail
 
+cd / >/dev/null 2>&1 || true
+export HOME="${HOME:-/home/nick}"
 cd "$HOME" || exit 1
 
 APP="${HOME}/magic-mirror"
@@ -20,6 +22,9 @@ chmod +x \
   "${APP}/scripts/pi/apply-update.sh" \
   "${APP}/scripts/pi/install-autoupdate.sh" \
   "${APP}/scripts/pi/fetch-github-release.sh" \
+  "${APP}/scripts/pi/recover-from-github.sh" \
+  "${APP}/scripts/pi/wait-for-display.sh" \
+  "${APP}/scripts/pi/wait-for-mirror.sh" \
   "${APP}/scripts/pi/bootstrap.sh" \
   "${APP}/scripts/update-from-zip.sh" \
   "${APP}/scripts/publish-github-release.sh" 2>/dev/null || true
@@ -32,9 +37,13 @@ cp -f "${APP}/scripts/pi/magic-mirror-update.path" "$UNIT_DIR/"
 cp -f "${APP}/scripts/pi/magic-mirror-github-fetch.service" "$UNIT_DIR/"
 cp -f "${APP}/scripts/pi/magic-mirror-github-fetch.timer" "$UNIT_DIR/"
 
-# Allow user services without an active login (Pi boot)
+# User systemd must run at boot without an interactive login
 if command -v loginctl >/dev/null 2>&1; then
-  sudo loginctl enable-linger "$USER" || true
+  if ! loginctl show-user "$USER" -p Linger 2>/dev/null | grep -q 'Linger=yes'; then
+    echo "Enabling linger for $USER (sudo)…"
+    sudo loginctl enable-linger "$USER"
+  fi
+  loginctl show-user "$USER" -p Linger 2>/dev/null || true
 fi
 
 systemctl --user daemon-reload
@@ -51,11 +60,14 @@ if [[ -f "${HOME}/magic_mirror_for_mac.zip" ]]; then
 fi
 
 echo ""
-echo "Auto-update installed."
-echo "  App:     systemctl --user status magic-mirror"
-echo "  Kiosk:   systemctl --user status magic-mirror-kiosk"
-echo "  Zip watch: systemctl --user status magic-mirror-update.path"
-echo "  GitHub:  systemctl --user status magic-mirror-github-fetch.timer"
+echo "Boot autostart installed (survives reboot)."
+echo "  Linger:  loginctl show-user $USER -p Linger"
+echo "  App:     systemctl --user is-enabled magic-mirror.service"
+echo "  Kiosk:   systemctl --user is-enabled magic-mirror-kiosk.service"
+echo "  Zip:     systemctl --user is-enabled magic-mirror-update.path"
+echo "  GitHub:  systemctl --user is-enabled magic-mirror-github-fetch.timer"
+systemctl --user is-enabled magic-mirror.service magic-mirror-kiosk.service \
+  magic-mirror-update.path magic-mirror-github-fetch.timer 2>/dev/null || true
 echo ""
 echo "GitHub repo: NickGrant89/magicmirror"
 echo "Every ~2 min the Pi curls (poll — not a webhook; home Pi has no public URL):"
@@ -63,4 +75,5 @@ echo "  https://github.com/NickGrant89/magicmirror/releases/latest/download/magi
 echo "apply-update uses ~/.magic-mirror/apply.lock so overlapping polls cannot corrupt builds."
 echo "Manual pull now:"
 echo "  cd / && bash ~/magic-mirror/scripts/pi/fetch-github-release.sh"
+echo "Test reboot: sudo reboot   — mirror + kiosk should come back on their own."
 echo "Logs: ~/.magic-mirror/update.log  and  ~/.magic-mirror/fetch.log"

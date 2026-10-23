@@ -165,10 +165,21 @@ chmod +x \
   "${APP}/scripts/pi/apply-update.sh" \
   "${APP}/scripts/pi/fetch-github-release.sh" \
   "${APP}/scripts/pi/recover-from-github.sh" \
-  "${APP}/scripts/pi/install-autoupdate.sh" 2>/dev/null || true
+  "${APP}/scripts/pi/install-autoupdate.sh" \
+  "${APP}/scripts/pi/wait-for-display.sh" \
+  "${APP}/scripts/pi/wait-for-mirror.sh" 2>/dev/null || true
+
+# Keep linger + boot enables healthy after every release apply
+if command -v loginctl >/dev/null 2>&1; then
+  if ! loginctl show-user "$USER" -p Linger 2>/dev/null | grep -q 'Linger=yes'; then
+    sudo loginctl enable-linger "$USER" 2>/dev/null || true
+  fi
+fi
+
 systemctl --user daemon-reload
+systemctl --user enable magic-mirror.service 2>/dev/null || true
+systemctl --user enable magic-mirror-kiosk.service 2>/dev/null || true
 systemctl --user enable --now magic-mirror-update.path 2>/dev/null || true
-# Restart so a shorter OnUnitActiveSec from this release takes effect immediately
 systemctl --user enable magic-mirror-github-fetch.timer 2>/dev/null || true
 systemctl --user restart magic-mirror-github-fetch.timer 2>/dev/null || \
   systemctl --user start magic-mirror-github-fetch.timer 2>/dev/null || true

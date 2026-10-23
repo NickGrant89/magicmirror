@@ -7,8 +7,9 @@ Wants=network-online.target
 Type=simple
 WorkingDirectory=%h/magic-mirror
 Environment=NODE_ENV=production
+Environment=PORT=43127
 ExecStart=/usr/bin/npm start
-Restart=on-failure
+Restart=always
 RestartSec=5
 TimeoutStartSec=120
 

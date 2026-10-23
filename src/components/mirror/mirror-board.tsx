@@ -119,7 +119,7 @@ export function MirrorBoard() {
               ))}
             </div>
             <p className="truncate text-[0.6rem] tracking-[0.14em] text-white/30 uppercase">
-              9″ Pi · v16.15 poll2m · {slideBadge(slides.slide)} ·{" "}
+              9″ Pi · v16.16 boot · {slideBadge(slides.slide)} ·{" "}
               {formatSlideRemain(slides.remainingMs)}
             </p>
           </div>

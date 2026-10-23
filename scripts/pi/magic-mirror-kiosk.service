@@ -1,17 +1,20 @@
 [Unit]
 Description=Magic Mirror Chromium kiosk
-After=magic-mirror.service graphical-session.target
+After=magic-mirror.service
 Wants=magic-mirror.service
+# graphical-session.target is unreliable with linger; wait-for-display.sh handles X/Wayland.
 
 [Service]
 Type=simple
 Environment=DISPLAY=:0
 Environment=XAUTHORITY=%h/.Xauthority
-# Prefer chromium-browser, fall back to chromium
-ExecStartPre=/bin/sleep 3
-ExecStart=/bin/bash -lc 'BIN=$(command -v chromium-browser || command -v chromium); exec "$BIN" --kiosk --noerrdialogs --disable-infobars --check-for-update-interval=31536000 --disable-session-crashed-bubble --no-first-run http://127.0.0.1:43127'
-Restart=on-failure
-RestartSec=5
+Environment=MAGIC_MIRROR_URL=http://127.0.0.1:43127/
+# Wait for seat graphics + the Next app (reboot / linger race)
+ExecStartPre=%h/magic-mirror/scripts/pi/wait-for-display.sh
+ExecStartPre=%h/magic-mirror/scripts/pi/wait-for-mirror.sh
+ExecStart=/bin/bash -lc 'BIN=$(command -v chromium-browser || command -v chromium); exec "$BIN" --kiosk --noerrdialogs --disable-infobars --check-for-update-interval=31536000 --disable-session-crashed-bubble --no-first-run --ozone-platform=x11 http://127.0.0.1:43127'
+Restart=always
+RestartSec=8
 
 [Install]
 WantedBy=default.target
