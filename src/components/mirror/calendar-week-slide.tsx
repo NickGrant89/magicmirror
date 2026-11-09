@@ -52,7 +52,10 @@ export function CalendarWeekSlide({
       dayEnd.setDate(dayEnd.getDate() + 1);
       const dayEvents = events
         .filter((ev) => overlapsDay(ev, dayStart, dayEnd))
-        .slice(0, 6);
+        .sort(
+          (a, b) =>
+            new Date(a.startsAt).getTime() - new Date(b.startsAt).getTime(),
+        );
       return {
         key: dayStart.toISOString(),
         index: i,
@@ -92,9 +95,14 @@ export function CalendarWeekSlide({
         <section className="flex min-h-0 flex-col rounded-2xl border border-white/15 bg-gradient-to-b from-white/10 to-white/[0.03] px-3 py-3">
           <div className="flex items-baseline justify-between gap-2">
             <p className="font-display text-xl text-white">{today?.label}</p>
-            <p className="text-sm text-white/45">{today?.short}</p>
+            <p className="text-sm text-white/45">
+              {today?.short}
+              {(today?.events.length ?? 0) > 0
+                ? ` · ${today?.events.length}`
+                : ""}
+            </p>
           </div>
-          <ul className="mt-3 min-h-0 flex-1 space-y-2 overflow-y-auto pr-1">
+          <ul className="mirror-scroll mt-3 min-h-0 flex-1 space-y-2 overflow-y-auto pr-1">
             {(today?.events.length ?? 0) === 0 ? (
               <li className="text-sm text-white/40">Nothing scheduled</li>
             ) : (
@@ -103,8 +111,10 @@ export function CalendarWeekSlide({
                   key={`${ev.id}-${ev.startsAt}`}
                   className="rounded-xl border border-white/10 bg-black/20 px-2.5 py-2"
                 >
-                  <p className="truncate text-base text-white/90">{ev.title}</p>
-                  <p className="mt-0.5 text-sm text-white/45 tabular-nums">
+                  <p className="break-words text-base text-white/90">
+                    {ev.title}
+                  </p>
+                  <p className="mt-0.5 break-words text-sm text-white/45 tabular-nums">
                     {formatEventTime(ev.startsAt, ev.allDay)}
                     {ev.location ? ` · ${ev.location}` : ""}
                   </p>
@@ -120,23 +130,26 @@ export function CalendarWeekSlide({
             <li
               key={col.key}
               className={cn(
-                "flex min-h-0 flex-col rounded-2xl border border-white/10 bg-white/[0.04] px-2.5 py-2",
+                "flex min-h-0 flex-col overflow-hidden rounded-2xl border border-white/10 bg-white/[0.04] px-2.5 py-2",
               )}
             >
               <p className="font-display text-sm tracking-wide text-white/80">
                 {col.label}
               </p>
-              <p className="text-[0.7rem] text-white/40">{col.short}</p>
-              <ul className="mt-2 min-h-0 flex-1 space-y-1.5 overflow-hidden">
+              <p className="text-[0.7rem] text-white/40">
+                {col.short}
+                {col.events.length > 0 ? ` · ${col.events.length}` : ""}
+              </p>
+              <ul className="mirror-scroll mt-2 min-h-0 flex-1 space-y-1.5 overflow-y-auto pr-0.5">
                 {col.events.length === 0 ? (
                   <li className="text-[0.7rem] text-white/30">Clear</li>
                 ) : (
                   col.events.map((ev) => (
                     <li key={`${ev.id}-${ev.startsAt}`} className="min-w-0">
-                      <p className="truncate text-[0.8rem] leading-tight text-white/85">
+                      <p className="break-words text-[0.8rem] leading-tight text-white/85">
                         {ev.title}
                       </p>
-                      <p className="truncate text-[0.65rem] text-white/40 tabular-nums">
+                      <p className="break-words text-[0.65rem] text-white/40 tabular-nums">
                         {formatEventTime(ev.startsAt, ev.allDay)}
                       </p>
                     </li>
@@ -149,7 +162,7 @@ export function CalendarWeekSlide({
       </div>
 
       {data?.note ? (
-        <p className="shrink-0 truncate text-[0.55rem] tracking-wide text-white/25">
+        <p className="shrink-0 break-words text-[0.55rem] tracking-wide text-white/25">
           {data.note}
         </p>
       ) : null}

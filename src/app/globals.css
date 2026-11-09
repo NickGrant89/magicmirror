@@ -143,6 +143,25 @@
     width: 0;
     height: 0;
   }
+
+  /* Calendar day lists: show a thin bar so overflow is scrollable, not clipped. */
+  .mirror-shell .mirror-scroll {
+    scrollbar-width: thin;
+    scrollbar-color: rgb(255 255 255 / 28%) transparent;
+    overscroll-behavior: contain;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .mirror-shell .mirror-scroll::-webkit-scrollbar {
+    display: block;
+    width: 4px;
+    height: 4px;
+  }
+
+  .mirror-shell .mirror-scroll::-webkit-scrollbar-thumb {
+    background: rgb(255 255 255 / 28%);
+    border-radius: 999px;
+  }
 }
 
 /* 9″ Raspberry Pi panels are typically ~1024×600 / 1280×720 landscape */

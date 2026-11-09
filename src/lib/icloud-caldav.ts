@@ -248,10 +248,8 @@ export async function fetchIcloudCalendarEvents(options?: {
   if (todayOnly) {
     events = events.filter((e) => overlapsLocalDay(e, dayStart, dayEnd));
   } else {
-    const now = Date.now();
-    events = events.filter(
-      (e) => new Date(e.endsAt).getTime() >= now - 15 * 60 * 1000,
-    );
+    // Full window, including events that already ended today.
+    events = events.filter((e) => overlapsLocalDay(e, dayStart, rangeEnd));
   }
 
   // Dedupe identical uid+start

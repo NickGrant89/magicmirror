@@ -14,6 +14,22 @@ function atOffset(hoursFromNow: number, durationMinutes = 60) {
   };
 }
 
+function atLocalDay(
+  dayOffset: number,
+  hour: number,
+  minute = 0,
+  durationMinutes = 60,
+) {
+  const startsAt = new Date();
+  startsAt.setDate(startsAt.getDate() + dayOffset);
+  startsAt.setHours(hour, minute, 0, 0);
+  const endsAt = new Date(startsAt.getTime() + durationMinutes * 60 * 1000);
+  return {
+    startsAt: startsAt.toISOString(),
+    endsAt: endsAt.toISOString(),
+  };
+}
+
 export function mockCalendarEvents(): CalendarEvent[] {
   const standup = atOffset(0.7, 30);
   const design = atOffset(3.2, 60);
@@ -50,37 +66,34 @@ export function mockCalendarEvents(): CalendarEvent[] {
 
 /** Spread of mock events across the next week (for the week tab). */
 export function mockCalendarWeekEvents(): CalendarEvent[] {
-  const base = mockCalendarEvents();
-  const extras: CalendarEvent[] = [
-    {
-      id: "evt-school-run",
-      title: "School run",
-      ...atOffset(24 * 2 + 8, 30),
-    },
-    {
-      id: "evt-gym",
-      title: "Gym",
-      ...atOffset(24 * 3 + 18, 60),
-    },
-    {
-      id: "evt-parents",
-      title: "Parents evening",
-      location: "School",
-      ...atOffset(24 * 4 + 17, 45),
-    },
-    {
-      id: "evt-market",
-      title: "Farmers market",
-      ...atOffset(24 * 5 + 10, 90),
-      allDay: false,
-    },
-    {
-      id: "evt-brunch",
-      title: "Sunday brunch",
-      ...atOffset(24 * 6 + 11, 90),
-    },
+  const busyToday: CalendarEvent[] = [
+    { id: "wk-today-1", title: "School run", ...atLocalDay(0, 7, 30, 30) },
+    { id: "wk-today-2", title: "Team standup", location: "Meet", ...atLocalDay(0, 9, 0, 30) },
+    { id: "wk-today-3", title: "Dentist", location: "Harley Street", ...atLocalDay(0, 10, 15, 45) },
+    { id: "wk-today-4", title: "Mirror UI review", location: "Studio", ...atLocalDay(0, 12, 0, 60) },
+    { id: "wk-today-5", title: "Pickup parcels", ...atLocalDay(0, 13, 30, 20) },
+    { id: "wk-today-6", title: "Call Mum", ...atLocalDay(0, 15, 0, 20) },
+    { id: "wk-today-7", title: "Gym", ...atLocalDay(0, 17, 30, 60) },
+    { id: "wk-today-8", title: "Dinner with Sam", location: "Borough Market", ...atLocalDay(0, 19, 30, 90) },
+    { id: "wk-today-9", title: "Bin night", ...atLocalDay(0, 21, 0, 15) },
   ];
-  return [...base, ...extras];
+  const busyTomorrow: CalendarEvent[] = [
+    { id: "wk-tmr-1", title: "School run", ...atLocalDay(1, 7, 30, 30) },
+    { id: "wk-tmr-2", title: "Yoga", ...atLocalDay(1, 9, 0, 45) },
+    { id: "wk-tmr-3", title: "Shop Tesco", ...atLocalDay(1, 11, 0, 40) },
+    { id: "wk-tmr-4", title: "Oil boiler service", ...atLocalDay(1, 13, 0, 60) },
+    { id: "wk-tmr-5", title: "Parents evening", location: "School", ...atLocalDay(1, 17, 0, 45) },
+    { id: "wk-tmr-6", title: "Takeaway night", ...atLocalDay(1, 19, 0, 60) },
+    { id: "wk-tmr-7", title: "Series catch-up", ...atLocalDay(1, 21, 0, 90) },
+  ];
+  const extras: CalendarEvent[] = [
+    { id: "evt-school-run", title: "School run", ...atLocalDay(2, 8, 0, 30) },
+    { id: "evt-gym", title: "Gym", ...atLocalDay(3, 18, 0, 60) },
+    { id: "evt-parents", title: "Book club", location: "Library", ...atLocalDay(4, 19, 0, 90) },
+    { id: "evt-market", title: "Farmers market", ...atLocalDay(5, 10, 0, 90) },
+    { id: "evt-brunch", title: "Sunday brunch", ...atLocalDay(6, 11, 0, 90) },
+  ];
+  return [...busyToday, ...busyTomorrow, ...extras];
 }
 
 export function mockTasks(): TaskItem[] {
