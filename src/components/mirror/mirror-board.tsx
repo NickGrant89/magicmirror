@@ -89,7 +89,7 @@ export function MirrorBoard() {
       <div className="mirror-shell relative flex h-dvh max-h-dvh flex-col overflow-hidden px-4 py-3 text-white md:px-6 md:py-4">
         <MirrorAtmosphere weatherCode={weatherCode} />
 
-        <header className="relative z-10 mb-2 flex shrink-0 items-center justify-between gap-3">
+        <header className="relative z-10 mb-1 flex shrink-0 items-center justify-between gap-2 sm:mb-2">
           <button
             type="button"
             onClick={slides.goNext}
@@ -119,7 +119,7 @@ export function MirrorBoard() {
               ))}
             </div>
             <p className="truncate text-[0.6rem] tracking-[0.14em] text-white/30 uppercase">
-              9″ Pi · v16.17 luton · {slideBadge(slides.slide)} ·{" "}
+              9″ Pi · v16.19 kiosk · {slideBadge(slides.slide)} ·{" "}
               {formatSlideRemain(slides.remainingMs)}
             </p>
           </div>
@@ -209,7 +209,7 @@ export function MirrorBoard() {
         </main>
 
         <div
-          className="relative z-10 mt-2 h-0.5 w-full overflow-hidden rounded-full bg-white/10"
+          className="mirror-progress relative z-10 mt-1.5 h-0.5 w-full overflow-hidden rounded-full bg-white/10 sm:mt-2"
           aria-hidden
         >
           <div

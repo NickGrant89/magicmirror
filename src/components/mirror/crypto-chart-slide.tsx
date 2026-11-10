@@ -41,9 +41,9 @@ export function CryptoChartSlide({
 
   return (
     <div className="flex h-full min-h-0 flex-col gap-1.5 overflow-hidden">
-      <div className="grid shrink-0 grid-cols-[1fr_auto] items-end gap-3">
+      <div className="grid shrink-0 grid-cols-[minmax(0,1fr)_auto] items-end gap-2 sm:gap-3">
         <div className="min-w-0">
-          <SectionLabel>Charts</SectionLabel>
+          <SectionLabel compact>Charts</SectionLabel>
           <div className="mt-0.5 flex flex-wrap items-baseline gap-x-3 gap-y-1">
             <h2 className="font-display text-3xl text-white sm:text-4xl">
               {symbol.symbol}
@@ -79,9 +79,7 @@ export function CryptoChartSlide({
             1W hero · 15m · 30m · 1h · 4h · 1D · Binance · not advice
           </p>
         </div>
-        <div className="origin-bottom-right scale-90 sm:scale-100">
-          <Clock />
-        </div>
+        <Clock compact />
       </div>
 
       {/* Dominant full-bleed 1W chart */}

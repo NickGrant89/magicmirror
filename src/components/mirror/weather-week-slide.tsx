@@ -33,19 +33,19 @@ export function WeatherWeekSlide({
   const forecast = weather?.forecast ?? [];
 
   return (
-    <div className="flex h-full min-h-0 flex-col gap-3 overflow-hidden">
-      <div className="grid shrink-0 grid-cols-[1fr_auto] items-end gap-3">
+    <div className="flex h-full min-h-0 flex-col gap-1.5 overflow-hidden sm:gap-3">
+      <div className="grid shrink-0 grid-cols-[minmax(0,1fr)_auto] items-end gap-2 sm:gap-3">
         <div className="min-w-0">
-          <SectionLabel>7-day weather</SectionLabel>
+          <SectionLabel compact>7-day weather</SectionLabel>
           {weather ? (
             <div
               className={cn(
-                "mt-2 rounded-2xl border border-white/10 bg-gradient-to-br px-4 py-3",
+                "mt-1 rounded-2xl border border-white/10 bg-gradient-to-br px-3 py-2 sm:mt-2 sm:px-4 sm:py-3",
                 weatherAccent(weather.weatherCode),
               )}
             >
               <div className="flex flex-wrap items-end gap-x-4 gap-y-1">
-                <p className="font-display text-5xl leading-none text-white tabular-nums sm:text-6xl">
+                <p className="weather-now-temp font-display text-4xl leading-none text-white tabular-nums sm:text-5xl md:text-6xl">
                   {weather.temperatureC}°
                 </p>
                 <div className="pb-0.5">
@@ -66,9 +66,7 @@ export function WeatherWeekSlide({
             </p>
           )}
         </div>
-        <div className="origin-bottom-right scale-90 sm:scale-100">
-          <Clock />
-        </div>
+        <Clock compact />
       </div>
 
       {forecast.length > 0 ? (
