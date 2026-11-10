@@ -22,7 +22,7 @@ export function PhotosSlide() {
     <div className="relative flex h-full min-h-0 flex-col overflow-hidden">
       <div className="pointer-events-none absolute inset-x-0 top-0 z-10 flex items-start justify-between gap-3 px-1 pt-0.5">
         <div className="min-w-0 rounded-xl bg-black/35 px-2.5 py-1.5 backdrop-blur-sm">
-          <SectionLabel>Photos</SectionLabel>
+          <SectionLabel compact>Photos</SectionLabel>
           <p className="mt-0.5 text-[0.7rem] text-white/55">
             {data?.source === "live"
               ? data.albumName || "Live album"
@@ -37,9 +37,7 @@ export function PhotosSlide() {
           </p>
         </div>
         <div className="rounded-xl bg-black/35 px-2 py-1 backdrop-blur-sm">
-          <div className="origin-top-right scale-90">
-            <Clock />
-          </div>
+          <Clock compact />
         </div>
       </div>
 
