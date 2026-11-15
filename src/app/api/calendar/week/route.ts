@@ -1,27 +1,19 @@
 import { NextResponse } from "next/server";
+import {
+  eventOverlapsLocalDay,
+  startOfLocalDay,
+} from "@/lib/calendar-days";
 import { hasAppleCalendarConfig } from "@/lib/config";
 import { fetchIcloudCalendarEvents } from "@/lib/icloud-caldav";
 import { mockCalendarWeekEvents } from "@/lib/mocks";
 import type { CalendarEvent, CalendarPayload } from "@/lib/types";
 
-function startOfLocalDay(d = new Date()) {
-  const day = new Date(d);
-  day.setHours(0, 0, 0, 0);
-  return day;
-}
-
 function inNextDays(events: CalendarEvent[], days: number) {
   const start = startOfLocalDay();
   const end = new Date(start);
   end.setDate(end.getDate() + days);
-  const startMs = start.getTime();
-  const endMs = end.getTime();
   return events
-    .filter((e) => {
-      const s = new Date(e.startsAt).getTime();
-      const en = new Date(e.endsAt).getTime();
-      return s < endMs && en > startMs;
-    })
+    .filter((e) => eventOverlapsLocalDay(e, start, end))
     .sort(
       (a, b) =>
         new Date(a.startsAt).getTime() - new Date(b.startsAt).getTime(),

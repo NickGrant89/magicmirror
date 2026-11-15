@@ -15,6 +15,7 @@ function mockForecast(): WeatherDay[] {
       summary: weatherSummary(base.weatherCode),
       highC: base.highC + ((i % 3) - 1),
       lowC: base.lowC,
+      precipChancePct: Math.min(90, 20 + i * 8),
     };
   });
 }
@@ -28,11 +29,11 @@ export async function GET() {
     url.searchParams.set("longitude", String(longitude));
     url.searchParams.set(
       "current",
-      "temperature_2m,apparent_temperature,weather_code,wind_speed_10m",
+      "temperature_2m,apparent_temperature,weather_code,wind_speed_10m,relative_humidity_2m",
     );
     url.searchParams.set(
       "daily",
-      "weather_code,temperature_2m_max,temperature_2m_min",
+      "weather_code,temperature_2m_max,temperature_2m_min,precipitation_probability_max,uv_index_max",
     );
     url.searchParams.set("timezone", "auto");
     url.searchParams.set("forecast_days", "7");
@@ -52,12 +53,15 @@ export async function GET() {
         apparent_temperature?: number;
         weather_code?: number;
         wind_speed_10m?: number;
+        relative_humidity_2m?: number;
       };
       daily?: {
         time?: string[];
         weather_code?: number[];
         temperature_2m_max?: number[];
         temperature_2m_min?: number[];
+        precipitation_probability_max?: number[];
+        uv_index_max?: number[];
       };
     };
 
@@ -72,6 +76,9 @@ export async function GET() {
         summary: weatherSummary(dayCode),
         highC: Math.round(data.daily?.temperature_2m_max?.[i] ?? 0),
         lowC: Math.round(data.daily?.temperature_2m_min?.[i] ?? 0),
+        precipChancePct: Math.round(
+          data.daily?.precipitation_probability_max?.[i] ?? 0,
+        ),
       });
     }
 
@@ -86,6 +93,11 @@ export async function GET() {
         summary: weatherSummary(code),
         highC: Math.round(data.daily?.temperature_2m_max?.[0] ?? 0),
         lowC: Math.round(data.daily?.temperature_2m_min?.[0] ?? 0),
+        humidityPct: Math.round(data.current?.relative_humidity_2m ?? 0),
+        precipChancePct: Math.round(
+          data.daily?.precipitation_probability_max?.[0] ?? 0,
+        ),
+        uvIndex: Math.round(data.daily?.uv_index_max?.[0] ?? 0),
         forecast,
       },
     };

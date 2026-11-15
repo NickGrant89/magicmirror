@@ -5,6 +5,12 @@
 
 import ICAL from "ical.js";
 import { createDAVClient } from "tsdav";
+import {
+  allDayRangeIso,
+  endOfLocalDay,
+  eventOverlapsLocalDay,
+  startOfLocalDay,
+} from "@/lib/calendar-days";
 import { mirrorConfig } from "@/lib/config";
 import type { CalendarEvent, TaskItem } from "@/lib/types";
 
@@ -54,14 +60,6 @@ function toIso(time: ICAL.Time | null | undefined): string | undefined {
   }
 }
 
-/** All-day iCal dates are timezone-naive; pin to local noon so UK days don't shift. */
-function allDayLocalIso(time: ICAL.Time): string {
-  const y = time.year;
-  const m = time.month; // 1–12
-  const d = time.day;
-  return new Date(y, m - 1, d, 12, 0, 0).toISOString();
-}
-
 function parseEventsFromIcal(
   data: string,
   calendarName: string,
@@ -81,22 +79,20 @@ function parseEventsFromIcal(
     try {
       const event = new ICAL.Event(vevent);
       const isAllDay = Boolean(event.startDate?.isDate);
-      const startsAt = event.startDate
-        ? isAllDay
-          ? allDayLocalIso(event.startDate)
-          : toIso(event.startDate)
-        : undefined;
-      if (!startsAt) continue;
+      let startsAt: string | undefined;
       let endsAt: string;
-      if (event.endDate) {
-        endsAt = isAllDay
-          ? allDayLocalIso(event.endDate)
-          : (toIso(event.endDate) ?? startsAt);
+      if (isAllDay && event.startDate) {
+        const range = allDayRangeIso(event.startDate, event.endDate);
+        startsAt = range.startsAt;
+        endsAt = range.endsAt;
       } else {
-        endsAt = new Date(
-          new Date(startsAt).getTime() + 60 * 60 * 1000,
-        ).toISOString();
+        startsAt = toIso(event.startDate);
+        if (!startsAt) continue;
+        endsAt =
+          toIso(event.endDate) ??
+          new Date(new Date(startsAt).getTime() + 60 * 60 * 1000).toISOString();
       }
+      if (!startsAt) continue;
       const location = event.location?.trim() || undefined;
       const title = event.summary?.trim() || "Untitled";
       const uid = event.uid || `${calendarName}-${startsAt}-${title}`;
@@ -175,24 +171,6 @@ function supportsComponent(cal: DavCalendar, component: string) {
   return comps.includes(component.toUpperCase());
 }
 
-function startOfLocalDay(d = new Date()) {
-  const day = new Date(d);
-  day.setHours(0, 0, 0, 0);
-  return day;
-}
-
-function endOfLocalDay(d = new Date()) {
-  const day = startOfLocalDay(d);
-  day.setDate(day.getDate() + 1);
-  return day;
-}
-
-function overlapsLocalDay(event: CalendarEvent, dayStart: Date, dayEnd: Date) {
-  const starts = new Date(event.startsAt).getTime();
-  const ends = new Date(event.endsAt).getTime();
-  return starts < dayEnd.getTime() && ends > dayStart.getTime();
-}
-
 /**
  * Events across CalDAV calendars.
  * Default: everything on the local calendar day (no artificial cap).
@@ -246,7 +224,7 @@ export async function fetchIcloudCalendarEvents(options?: {
   );
 
   if (todayOnly) {
-    events = events.filter((e) => overlapsLocalDay(e, dayStart, dayEnd));
+    events = events.filter((e) => eventOverlapsLocalDay(e, dayStart, dayEnd));
   } else {
     const now = Date.now();
     events = events.filter(

@@ -3,15 +3,13 @@
 import { useMemo } from "react";
 import { Clock } from "@/components/mirror/clock";
 import { SectionLabel } from "@/components/mirror/section-label";
+import {
+  eventOverlapsLocalDay,
+  startOfLocalDay,
+} from "@/lib/calendar-days";
 import { formatEventTime } from "@/lib/format";
-import type { CalendarEvent, CalendarPayload } from "@/lib/types";
+import type { CalendarPayload } from "@/lib/types";
 import { cn } from "@/lib/utils";
-
-function startOfLocalDay(d = new Date()) {
-  const day = new Date(d);
-  day.setHours(0, 0, 0, 0);
-  return day;
-}
 
 function dayLabel(date: Date, index: number) {
   if (index === 0) return "Today";
@@ -25,12 +23,6 @@ function dayShort(date: Date) {
     day: "numeric",
     month: "short",
   }).format(date);
-}
-
-function overlapsDay(event: CalendarEvent, dayStart: Date, dayEnd: Date) {
-  const s = new Date(event.startsAt).getTime();
-  const e = new Date(event.endsAt).getTime();
-  return s < dayEnd.getTime() && e > dayStart.getTime();
 }
 
 export function CalendarWeekSlide({
@@ -51,7 +43,7 @@ export function CalendarWeekSlide({
       const dayEnd = new Date(dayStart);
       dayEnd.setDate(dayEnd.getDate() + 1);
       const dayEvents = events
-        .filter((ev) => overlapsDay(ev, dayStart, dayEnd))
+        .filter((ev) => eventOverlapsLocalDay(ev, dayStart, dayEnd))
         .slice(0, 6);
       return {
         key: dayStart.toISOString(),
