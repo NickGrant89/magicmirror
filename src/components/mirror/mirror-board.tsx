@@ -1,7 +1,6 @@
 "use client";
 
 import { useMemo } from "react";
-import { CalendarPanel } from "@/components/mirror/calendar-panel";
 import { CalendarWeekSlide } from "@/components/mirror/calendar-week-slide";
 import { Clock } from "@/components/mirror/clock";
 import { CryptoChartSlide } from "@/components/mirror/crypto-chart-slide";
@@ -119,7 +118,7 @@ export function MirrorBoard() {
               ))}
             </div>
             <p className="truncate text-[0.6rem] tracking-[0.14em] text-white/30 uppercase">
-              9″ Pi · v16.17 luton · {slideBadge(slides.slide)} ·{" "}
+              9″ Pi · v16.20 allday · {slideBadge(slides.slide)} ·{" "}
               {formatSlideRemain(slides.remainingMs)}
             </p>
           </div>
@@ -162,12 +161,6 @@ export function MirrorBoard() {
                   </div>
 
                   <div className="flex min-h-0 flex-col justify-start gap-3 overflow-hidden border-white/10 sm:border-l sm:pl-4">
-                    <CalendarPanel
-                      data={calendar.data}
-                      loading={calendar.loading}
-                      error={calendar.error}
-                      compact
-                    />
                     <div className="min-h-0 flex-1 overflow-hidden">
                       <NewsPanel compact />
                     </div>
