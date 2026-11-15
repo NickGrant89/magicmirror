@@ -41,7 +41,7 @@ export function WeatherWeekSlide({
           {weather ? (
             <div
               className={cn(
-                "mt-2 rounded-2xl border border-white/10 bg-gradient-to-br px-4 py-3",
+                "mirror-glass mt-2 rounded-2xl bg-gradient-to-br px-4 py-3",
                 weatherAccent(weather.weatherCode),
               )}
             >
@@ -127,7 +127,7 @@ export function WeatherWeekSlide({
               <li
                 key={day.date || i}
                 className={cn(
-                  "relative flex min-h-0 flex-col overflow-hidden rounded-2xl border border-white/12 bg-gradient-to-b px-1.5 py-2.5 sm:px-2.5",
+                  "mirror-glass relative flex min-h-0 flex-col overflow-hidden rounded-2xl bg-gradient-to-b px-1.5 py-2.5 sm:px-2.5",
                   weatherAccent(day.weatherCode),
                   i === 0 ? "ring-1 ring-white/25" : "",
                 )}

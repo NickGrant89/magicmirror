@@ -27,6 +27,7 @@ import type {
   CryptoPayload,
   WeatherPayload,
 } from "@/lib/types";
+import { dayPart, dayPartLabel } from "@/lib/format";
 import { cn } from "@/lib/utils";
 
 function formatSlideRemain(ms: number) {
@@ -82,6 +83,7 @@ export function MirrorBoard() {
     : null;
 
   const weatherCode = weather.data?.weather?.weatherCode;
+  const part = dayPartLabel(dayPart());
 
   return (
     <PhotoSlideshowProvider>
@@ -92,33 +94,37 @@ export function MirrorBoard() {
           <button
             type="button"
             onClick={slides.goNext}
-            className="text-left"
+            className="flex items-center gap-2 text-left"
             aria-label="Next mirror screen"
           >
-            <p className="font-display text-[0.7rem] tracking-[0.32em] text-white/65 uppercase">
+            <span
+              className="size-1.5 rounded-full bg-teal-300 shadow-[0_0_10px_rgb(94,234,212,0.85)]"
+              aria-hidden
+            />
+            <p className="font-display text-[0.72rem] tracking-[0.34em] text-white/80 uppercase">
               Magic Mirror
             </p>
           </button>
           <div className="flex min-w-0 items-center gap-3">
-            <div className="hidden items-center gap-1 sm:flex" aria-hidden>
+            <div className="hidden items-center gap-1.5 sm:flex" aria-hidden>
               {slides.labels.map((label, i) => (
                 <button
                   key={`${label}-${i}`}
                   type="button"
                   onClick={() => slides.goTo(i)}
                   className={cn(
-                    "rounded-full transition",
+                    "rounded-full transition-all",
                     slides.index === i
-                      ? "h-1.5 w-4 bg-white"
-                      : "size-1.5 bg-white/30",
+                      ? "h-1.5 w-5 bg-white shadow-[0_0_8px_rgb(255,255,255,0.55)]"
+                      : "size-1.5 bg-white/28 hover:bg-white/50",
                   )}
                   aria-label={`Show ${label}`}
                   title={label}
                 />
               ))}
             </div>
-            <p className="truncate text-[0.6rem] tracking-[0.14em] text-white/30 uppercase">
-              9″ Pi · v16.21 weather · {slideBadge(slides.slide)} ·{" "}
+            <p className="truncate text-[0.6rem] tracking-[0.16em] text-white/35 uppercase">
+              {part} · v16.22 look · {slideBadge(slides.slide)} ·{" "}
               {formatSlideRemain(slides.remainingMs)}
             </p>
           </div>
@@ -134,12 +140,12 @@ export function MirrorBoard() {
           >
             {slides.slide.kind === "home" ? (
               <>
-                <section className="grid shrink-0 grid-cols-1 items-end gap-3 sm:grid-cols-[1.2fr_1fr_1.05fr]">
+                <section className="grid shrink-0 grid-cols-1 items-end gap-4 sm:grid-cols-[1.15fr_1fr_1.15fr]">
                   <Clock />
-                  <div className="min-w-0 border-white/10 sm:border-l sm:pl-4">
+                  <div className="min-w-0">
                     <RadioPanel compact />
                   </div>
-                  <div className="grid grid-cols-2 gap-3 border-white/10 sm:grid-cols-[1.25fr_0.85fr] sm:border-l sm:pl-4">
+                  <div className="grid grid-cols-2 gap-3 sm:grid-cols-[1.25fr_0.85fr]">
                     <WeatherPanel
                       data={weather.data}
                       loading={weather.loading}
@@ -153,20 +159,20 @@ export function MirrorBoard() {
                   </div>
                 </section>
 
-                <div className="h-px w-full shrink-0 bg-gradient-to-r from-transparent via-white/15 to-transparent" />
+                <div className="h-px w-full shrink-0 bg-gradient-to-r from-transparent via-teal-200/25 to-transparent" />
 
                 <section className="grid min-h-0 flex-1 grid-cols-1 gap-4 overflow-hidden sm:grid-cols-[1.15fr_0.95fr_1fr]">
                   <div className="min-h-0 overflow-hidden">
                     <PhotoFrame compact />
                   </div>
 
-                  <div className="flex min-h-0 flex-col justify-start gap-3 overflow-hidden border-white/10 sm:border-l sm:pl-4">
+                  <div className="flex min-h-0 flex-col justify-start gap-3 overflow-hidden">
                     <div className="min-h-0 flex-1 overflow-hidden">
                       <NewsPanel compact />
                     </div>
                   </div>
 
-                  <div className="flex min-h-0 flex-col justify-start gap-2 overflow-hidden border-white/10 sm:border-l sm:pl-4">
+                  <div className="flex min-h-0 flex-col justify-start gap-2 overflow-hidden">
                     <GuestWifiCard compact />
                     <CryptoPanel
                       data={crypto.data}
@@ -206,7 +212,7 @@ export function MirrorBoard() {
           aria-hidden
         >
           <div
-            className="h-full rounded-full bg-white/70 transition-[width] duration-200 ease-linear"
+            className="mirror-progress-fill h-full rounded-full transition-[width] duration-200 ease-linear"
             style={{ width: `${slides.progress * 100}%` }}
           />
         </div>

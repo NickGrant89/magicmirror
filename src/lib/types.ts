@@ -123,6 +123,7 @@ export type NewsItem = {
   title: string;
   link?: string;
   publishedAt?: string;
+  tag?: string;
 };
 
 export type NewsPayload = {

@@ -1,3 +1,21 @@
+export type DayPart = "night" | "morning" | "afternoon" | "evening";
+
+export function dayPart(date = new Date()): DayPart {
+  const hour = date.getHours();
+  if (hour < 6) return "night";
+  if (hour < 12) return "morning";
+  if (hour < 17) return "afternoon";
+  if (hour < 21) return "evening";
+  return "night";
+}
+
+export function dayPartLabel(part: DayPart) {
+  if (part === "morning") return "Morning";
+  if (part === "afternoon") return "Afternoon";
+  if (part === "evening") return "Evening";
+  return "Night";
+}
+
 export function formatClockTime(date: Date) {
   return new Intl.DateTimeFormat(undefined, {
     hour: "2-digit",

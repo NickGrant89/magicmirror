@@ -4,6 +4,7 @@ import { useMemo, useSyncExternalStore } from "react";
 import { SectionLabel } from "@/components/mirror/section-label";
 import { formatCountdown, formatEventTime } from "@/lib/format";
 import type { CalendarEvent } from "@/lib/types";
+import { cn } from "@/lib/utils";
 
 function subscribe(onStoreChange: () => void) {
   const id = setInterval(onStoreChange, 30_000);
@@ -41,53 +42,59 @@ export function NextEventCountdown({
       )[0];
   }, [events, now]);
 
-  if (!now) {
-    return (
-      <section className="mirror-fade-in-delay-1" aria-hidden>
-        <SectionLabel compact={compact}>Up next</SectionLabel>
-        <div className={compact ? "h-8 w-28 rounded bg-white/5" : "h-12 w-40 rounded bg-white/5"} />
-      </section>
-    );
-  }
-
-  if (!next) {
-    return (
-      <section className="mirror-fade-in-delay-1">
-        <SectionLabel compact={compact}>Up next</SectionLabel>
-        <p
-          className={
-            compact
-              ? "font-display text-xl text-white/80"
-              : "font-display text-3xl text-white/80 md:text-4xl"
-          }
-        >
-          Clear schedule
-        </p>
-      </section>
-    );
-  }
-
   return (
-    <section className="mirror-fade-in-delay-1">
+    <section className="mirror-fade-in-delay-1 min-w-0">
       <SectionLabel compact={compact}>Up next</SectionLabel>
-      <p
-        className={
-          compact
-            ? "font-display text-[clamp(1.6rem,4vw,2.2rem)] leading-none tracking-tight text-white"
-            : "font-display text-[clamp(2.4rem,5vw,3.6rem)] leading-none tracking-tight text-white"
-        }
+      <div
+        className={cn(
+          "mirror-glass rounded-2xl",
+          compact ? "px-2 py-1.5" : "px-3 py-2.5",
+        )}
       >
-        {formatCountdown(next.startsAt, now)}
-      </p>
-      <p className={compact ? "mt-1 truncate text-sm text-white/85" : "mt-3 text-lg text-white/85 md:text-xl"}>
-        {next.title}
-      </p>
-      {!compact ? (
-        <p className="mt-1 text-sm text-white/45">
-          {formatEventTime(next.startsAt, next.allDay)}
-          {next.location ? ` · ${next.location}` : ""}
-        </p>
-      ) : null}
+        {!now ? (
+          <div
+            className={compact ? "h-8 w-24 rounded bg-white/5" : "h-12 w-40 rounded bg-white/5"}
+            aria-hidden
+          />
+        ) : !next ? (
+          <p
+            className={
+              compact
+                ? "font-display text-xl text-white/80"
+                : "font-display text-3xl text-white/80 md:text-4xl"
+            }
+          >
+            Clear
+          </p>
+        ) : (
+          <>
+            <p
+              className={
+                compact
+                  ? "font-display text-[clamp(1.5rem,3.8vw,2.1rem)] leading-none tracking-tight text-white"
+                  : "font-display text-[clamp(2.4rem,5vw,3.6rem)] leading-none tracking-tight text-white"
+              }
+            >
+              {formatCountdown(next.startsAt, now)}
+            </p>
+            <p
+              className={
+                compact
+                  ? "mt-1 line-clamp-2 text-[0.78rem] leading-tight text-white/85"
+                  : "mt-3 text-lg text-white/85 md:text-xl"
+              }
+            >
+              {next.title}
+            </p>
+            {!compact ? (
+              <p className="mt-1 text-sm text-white/45">
+                {formatEventTime(next.startsAt, next.allDay)}
+                {next.location ? ` · ${next.location}` : ""}
+              </p>
+            ) : null}
+          </>
+        )}
+      </div>
     </section>
   );
 }

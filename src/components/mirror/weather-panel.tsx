@@ -61,7 +61,7 @@ export function WeatherPanel({
       ) : weather ? (
         <div
           className={cn(
-            "rounded-2xl border border-white/12 bg-gradient-to-br shadow-[inset_0_1px_0_rgb(255_255_255_/_8%)]",
+            "mirror-glass rounded-2xl bg-gradient-to-br",
             weatherAccent(weather.weatherCode),
             compact ? "mt-0.5 px-2 py-1.5" : "mt-1 px-3 py-2.5",
           )}

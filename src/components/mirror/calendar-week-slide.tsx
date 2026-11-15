@@ -81,7 +81,7 @@ export function CalendarWeekSlide({
 
       <div className="grid min-h-0 flex-1 grid-cols-1 gap-2 overflow-hidden sm:grid-cols-[1.15fr_1.85fr]">
         {/* Today — large */}
-        <section className="flex min-h-0 flex-col rounded-2xl border border-white/15 bg-gradient-to-b from-white/10 to-white/[0.03] px-3 py-3">
+        <section className="mirror-glass flex min-h-0 flex-col rounded-2xl px-3 py-3">
           <div className="flex items-baseline justify-between gap-2">
             <p className="font-display text-xl text-white">{today?.label}</p>
             <p className="text-sm text-white/45">{today?.short}</p>
@@ -112,7 +112,7 @@ export function CalendarWeekSlide({
             <li
               key={col.key}
               className={cn(
-                "flex min-h-0 flex-col rounded-2xl border border-white/10 bg-white/[0.04] px-2.5 py-2",
+                "mirror-glass flex min-h-0 flex-col rounded-2xl px-2.5 py-2",
               )}
             >
               <p className="font-display text-sm tracking-wide text-white/80">

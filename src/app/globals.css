@@ -87,6 +87,7 @@
   --mirror-aurora-a: rgb(55 170 185 / 42%);
   --mirror-aurora-b: rgb(80 130 200 / 34%);
   --mirror-aurora-c: rgb(200 145 75 / 22%);
+  --mirror-horizon: rgb(80 140 190 / 18%);
 }
 
 .dark {
@@ -180,6 +181,69 @@
     radial-gradient(60% 50% at 80% 20%, rgb(22 40 52 / 70%), transparent 55%),
     linear-gradient(180deg, #05070c 0%, #020305 55%, #000 100%);
   transition: background 1.2s ease;
+}
+
+[data-tod="morning"] {
+  --mirror-aurora-a: rgb(255 186 120 / 48%);
+  --mirror-aurora-b: rgb(120 180 220 / 36%);
+  --mirror-aurora-c: rgb(255 210 150 / 28%);
+  --mirror-horizon: rgb(255 170 110 / 22%);
+}
+[data-tod="afternoon"] {
+  --mirror-aurora-a: rgb(70 190 210 / 46%);
+  --mirror-aurora-b: rgb(90 150 230 / 34%);
+  --mirror-aurora-c: rgb(255 200 120 / 20%);
+  --mirror-horizon: rgb(90 170 210 / 20%);
+}
+[data-tod="evening"] {
+  --mirror-aurora-a: rgb(180 90 160 / 40%);
+  --mirror-aurora-b: rgb(90 110 210 / 38%);
+  --mirror-aurora-c: rgb(255 140 80 / 32%);
+  --mirror-horizon: rgb(255 120 70 / 20%);
+}
+[data-tod="night"] {
+  --mirror-aurora-a: rgb(40 90 180 / 44%);
+  --mirror-aurora-b: rgb(90 60 170 / 36%);
+  --mirror-aurora-c: rgb(30 160 170 / 22%);
+  --mirror-horizon: rgb(50 90 160 / 22%);
+}
+
+.mirror-horizon {
+  background: linear-gradient(
+    180deg,
+    transparent 0%,
+    var(--mirror-horizon) 100%
+  );
+  pointer-events: none;
+}
+
+.mirror-glass {
+  border: 1px solid rgb(255 255 255 / 12%);
+  background-color: rgb(255 255 255 / 4.5%);
+  box-shadow:
+    inset 0 1px 0 rgb(255 255 255 / 14%),
+    0 12px 28px rgb(0 0 0 / 22%);
+}
+
+.mirror-clock-glow {
+  text-shadow:
+    0 0 28px rgb(180 220 255 / 28%),
+    0 0 64px rgb(120 170 220 / 16%),
+    0 8px 24px rgb(0 0 0 / 35%);
+}
+
+.mirror-progress-fill {
+  background: linear-gradient(
+    90deg,
+    rgb(94 234 212 / 85%),
+    rgb(186 230 253 / 90%),
+    rgb(253 224 150 / 88%)
+  );
+  box-shadow: 0 0 12px rgb(94 234 212 / 35%);
+}
+
+.mirror-label-pip {
+  box-shadow: 0 0 8px rgb(94 234 212 / 70%);
 }
 
 .mirror-aurora {
