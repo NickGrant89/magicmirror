@@ -34,7 +34,7 @@ export function GuestWifiCard({ compact = false }: { compact?: boolean }) {
 
       <div
         className={cn(
-          "guest-wifi-card flex items-stretch overflow-hidden rounded-xl bg-white text-zinc-900 shadow-[0_0_0_1px_rgb(255_255_255_/_8%),0_12px_28px_rgb(0_0_0_/_30%)]",
+          "guest-wifi-card flex items-stretch overflow-hidden rounded-xl bg-white text-zinc-900 shadow-[0_0_0_1px_rgb(255_255_255_/_14%),0_10px_28px_rgb(0_0_0_/_28%),0_0_24px_rgb(255_255_255_/_8%)]",
         )}
       >
         <div

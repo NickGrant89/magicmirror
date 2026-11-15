@@ -27,7 +27,12 @@ export function CryptoPanel({
       ) : error && !data ? (
         <p className="text-sm text-white/50">Markets unavailable</p>
       ) : (
-        <ul className={cn(compact ? "space-y-1" : "space-y-3")}>
+        <ul
+          className={cn(
+            "mirror-glass rounded-2xl",
+            compact ? "space-y-0 px-2 py-1.5" : "space-y-1 px-3 py-2.5",
+          )}
+        >
           {quotes.map((quote) => {
             const signal =
               quote.signal ??
@@ -38,8 +43,8 @@ export function CryptoPanel({
                 key={quote.symbol}
                 className={
                   compact
-                    ? "grid grid-cols-[2.5rem_1fr_auto] items-start gap-1.5"
-                    : "grid grid-cols-[3.5rem_1fr_auto] items-baseline gap-3"
+                    ? "grid grid-cols-[2.5rem_1fr_auto] items-start gap-1.5 rounded-lg py-0.5"
+                    : "grid grid-cols-[3.5rem_1fr_auto] items-baseline gap-3 rounded-lg py-1"
                 }
               >
                 <span

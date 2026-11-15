@@ -39,7 +39,7 @@ export function Clock() {
 
   return (
     <div className="mirror-fade-in text-center sm:text-left">
-      <p className="font-display text-[clamp(2.6rem,9vw,4.75rem)] font-medium leading-none tracking-[-0.04em] text-white tabular-nums">
+      <p className="mirror-clock-glow font-display text-[clamp(2.6rem,9vw,4.75rem)] font-medium leading-none tracking-[-0.04em] text-white tabular-nums">
         {formatClockTime(now)}
         <span className="ml-1.5 align-top text-[0.22em] font-normal tracking-normal text-white/35 sm:ml-2">
           {formatClockSeconds(now)}

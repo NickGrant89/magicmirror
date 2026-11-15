@@ -1,3 +1,4 @@
+import { allDayRangeIso, startOfLocalDay } from "@/lib/calendar-days";
 import type {
   CalendarEvent,
   DoorbellEvent,
@@ -14,6 +15,28 @@ function atOffset(hoursFromNow: number, durationMinutes = 60) {
   };
 }
 
+function allDayOffset(daysFromToday: number, lengthDays = 1) {
+  const start = startOfLocalDay();
+  start.setDate(start.getDate() + daysFromToday);
+  const end = new Date(start);
+  end.setDate(end.getDate() + lengthDays);
+  return {
+    ...allDayRangeIso(
+      {
+        year: start.getFullYear(),
+        month: start.getMonth() + 1,
+        day: start.getDate(),
+      },
+      {
+        year: end.getFullYear(),
+        month: end.getMonth() + 1,
+        day: end.getDate(),
+      },
+    ),
+    allDay: true as const,
+  };
+}
+
 export function mockCalendarEvents(): CalendarEvent[] {
   const standup = atOffset(0.7, 30);
   const design = atOffset(3.2, 60);
@@ -21,6 +44,11 @@ export function mockCalendarEvents(): CalendarEvent[] {
   const tomorrow = atOffset(26, 45);
 
   return [
+    {
+      id: "evt-holiday",
+      title: "School closed",
+      ...allDayOffset(0),
+    },
     {
       id: "evt-standup",
       title: "Team standup",
@@ -138,6 +166,9 @@ export function mockWeather(): WeatherSnapshot {
     summary: "Partly cloudy",
     highC: 15,
     lowC: 8,
+    humidityPct: 72,
+    precipChancePct: 35,
+    uvIndex: 2,
   };
 }
 

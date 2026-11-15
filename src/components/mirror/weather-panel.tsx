@@ -1,9 +1,41 @@
 "use client";
 
 import { SectionLabel } from "@/components/mirror/section-label";
-import { weatherAccent, weatherBadge } from "@/lib/weather-codes";
+import { WeatherGlyph } from "@/components/mirror/weather-glyph";
+import { weatherAccent } from "@/lib/weather-codes";
 import type { WeatherPayload } from "@/lib/types";
 import { cn } from "@/lib/utils";
+
+function Metric({
+  label,
+  value,
+  compact,
+}: {
+  label: string;
+  value: string;
+  compact?: boolean;
+}) {
+  return (
+    <div className="min-w-0">
+      <p
+        className={cn(
+          "tracking-[0.14em] text-white/40 uppercase",
+          compact ? "text-[0.5rem]" : "text-[0.55rem]",
+        )}
+      >
+        {label}
+      </p>
+      <p
+        className={cn(
+          "font-display text-white/90 tabular-nums",
+          compact ? "text-[0.82rem] leading-tight" : "text-base",
+        )}
+      >
+        {value}
+      </p>
+    </div>
+  );
+}
 
 export function WeatherPanel({
   data,
@@ -17,9 +49,10 @@ export function WeatherPanel({
   compact?: boolean;
 }) {
   const weather = data?.weather;
+  const tomorrow = weather?.forecast?.[1];
 
   return (
-    <section className="mirror-fade-in-delay-1">
+    <section className="mirror-fade-in-delay-1 min-w-0">
       <SectionLabel compact={compact}>Weather</SectionLabel>
       {loading && !data ? (
         <p className="text-sm text-white/40">Reading skies…</p>
@@ -28,39 +61,103 @@ export function WeatherPanel({
       ) : weather ? (
         <div
           className={cn(
-            "rounded-xl border border-white/10 bg-gradient-to-br px-2 py-1.5",
+            "mirror-glass rounded-2xl bg-gradient-to-br",
             weatherAccent(weather.weatherCode),
-            compact ? "mt-0.5" : "mt-1 px-3 py-2",
+            compact ? "mt-0.5 px-2 py-1.5" : "mt-1 px-3 py-2.5",
           )}
         >
-          <div className="flex items-end gap-2">
-            <p
-              className={
-                compact
-                  ? "font-display text-[clamp(1.8rem,5vw,2.6rem)] leading-none tracking-tight text-white tabular-nums"
-                  : "font-display text-[clamp(3rem,6vw,4.5rem)] leading-none tracking-tight text-white tabular-nums"
-              }
-            >
-              {weather.temperatureC}°
-            </p>
-            <p
-              className={cn(
-                "mb-0.5 font-display tracking-[0.14em] text-white/70 uppercase",
-                compact ? "text-[0.65rem]" : "text-sm",
-              )}
-            >
-              {weatherBadge(weather.weatherCode)}
-            </p>
-          </div>
-          <p className={compact ? "mt-0.5 text-sm text-white/80" : "mt-1 text-xl text-white/80"}>
-            {weather.summary}
-          </p>
-          <p className={compact ? "mt-0.5 text-[0.7rem] text-white/45" : "mt-1 text-sm text-white/45"}>
-            {weather.locationLabel}
-            {compact
-              ? ` · H${weather.highC}° L${weather.lowC}°`
-              : ` · H ${weather.highC}° · L ${weather.lowC}° · feels ${weather.feelsLikeC}°`}
-          </p>
+          {compact ? (
+            <>
+              <div className="flex items-end gap-1.5">
+                <WeatherGlyph
+                  code={weather.weatherCode}
+                  className="mb-0.5 size-7"
+                />
+                <p className="font-display text-[clamp(1.7rem,4.6vw,2.3rem)] leading-none tracking-tight text-white tabular-nums">
+                  {weather.temperatureC}°
+                </p>
+              </div>
+              <p className="mt-1 truncate text-[0.8rem] leading-tight text-white/90">
+                {weather.summary}
+                <span className="text-white/45"> · {weather.locationLabel}</span>
+              </p>
+              <div className="mt-1.5 grid grid-cols-2 gap-x-2 gap-y-1">
+                <Metric compact label="Feels" value={`${weather.feelsLikeC}°`} />
+                <Metric
+                  compact
+                  label="High / low"
+                  value={`${weather.highC}°/${weather.lowC}°`}
+                />
+                <Metric compact label="Wind" value={`${weather.windKph} kph`} />
+                <Metric
+                  compact
+                  label="Rain"
+                  value={
+                    weather.precipChancePct != null
+                      ? `${weather.precipChancePct}%`
+                      : weather.humidityPct != null
+                        ? `${weather.humidityPct}% rh`
+                        : "—"
+                  }
+                />
+              </div>
+            </>
+          ) : (
+            <>
+              <div className="flex items-center gap-2">
+                <WeatherGlyph
+                  code={weather.weatherCode}
+                  className="size-12"
+                />
+                <p className="font-display text-[clamp(3rem,6vw,4.5rem)] leading-none tracking-tight text-white tabular-nums">
+                  {weather.temperatureC}°
+                </p>
+                <div className="min-w-0 flex-1">
+                  <p className="truncate font-display text-xl tracking-wide text-white/90">
+                    {weather.summary}
+                  </p>
+                  <p className="truncate text-sm text-white/45">
+                    {weather.locationLabel}
+                  </p>
+                </div>
+              </div>
+              <div className="mt-3 grid grid-cols-4 gap-2">
+                <Metric label="Feels" value={`${weather.feelsLikeC}°`} />
+                <Metric
+                  label="High / low"
+                  value={`${weather.highC}° / ${weather.lowC}°`}
+                />
+                <Metric label="Wind" value={`${weather.windKph} km/h`} />
+                <Metric
+                  label="Rain"
+                  value={
+                    weather.precipChancePct != null
+                      ? `${weather.precipChancePct}%`
+                      : "—"
+                  }
+                />
+              </div>
+              {weather.humidityPct != null || weather.uvIndex != null ? (
+                <p className="mt-2 text-sm text-white/45">
+                  {weather.humidityPct != null
+                    ? `Humidity ${weather.humidityPct}%`
+                    : ""}
+                  {weather.humidityPct != null && weather.uvIndex != null
+                    ? " · "
+                    : ""}
+                  {weather.uvIndex != null ? `UV ${weather.uvIndex}` : ""}
+                </p>
+              ) : null}
+              {tomorrow ? (
+                <p className="mt-2 truncate text-sm text-white/50">
+                  Tomorrow {tomorrow.summary} {tomorrow.highC}° / {tomorrow.lowC}°
+                  {tomorrow.precipChancePct != null
+                    ? ` · ${tomorrow.precipChancePct}% rain`
+                    : ""}
+                </p>
+              ) : null}
+            </>
+          )}
         </div>
       ) : null}
     </section>

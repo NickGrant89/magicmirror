@@ -75,9 +75,10 @@ export function RadioPanel({ compact = false }: { compact?: boolean }) {
         onClick={() => void toggle()}
         className={cn(
           "flex w-full items-center text-left transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal-300/40",
+          "mirror-glass",
           compact
-            ? "gap-2 rounded-xl border border-white/10 bg-white/[0.03] px-2.5 py-1.5 hover:bg-white/[0.06]"
-            : "gap-4 rounded-2xl border border-white/10 bg-white/[0.03] px-4 py-4 hover:bg-white/[0.06]",
+            ? "gap-2 rounded-xl px-2.5 py-1.5 hover:bg-white/[0.08]"
+            : "gap-4 rounded-2xl px-4 py-4 hover:bg-white/[0.08]",
           status === "live" && "border-teal-300/35 bg-teal-400/10",
           status === "loading" && "border-white/25 bg-white/10",
           status === "error" && "border-rose-300/30 bg-rose-400/10",

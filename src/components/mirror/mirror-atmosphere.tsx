@@ -1,8 +1,18 @@
 "use client";
 
-import { useMemo } from "react";
+import { useMemo, useSyncExternalStore } from "react";
+import { dayPart } from "@/lib/format";
 import { weatherMood, type WeatherMood } from "@/lib/weather-codes";
 import { cn } from "@/lib/utils";
+
+function subscribeHour(onStoreChange: () => void) {
+  const id = setInterval(onStoreChange, 60_000);
+  return () => clearInterval(id);
+}
+
+function hourSnapshot() {
+  return new Date().getHours();
+}
 
 function ParticleField({
   kind,
@@ -72,6 +82,8 @@ export function MirrorAtmosphere({
 }: {
   weatherCode?: number;
 }) {
+  const hour = useSyncExternalStore(subscribeHour, hourSnapshot, () => 18);
+  const tod = dayPart(new Date(2000, 0, 1, hour));
   const mood = weatherMood(weatherCode ?? 3);
   const showRain = mood === "rain" || mood === "storm";
   const showDrizzle = mood === "drizzle";
@@ -92,11 +104,13 @@ export function MirrorAtmosphere({
       aria-hidden
       className="pointer-events-none fixed inset-0 -z-10 overflow-hidden bg-black"
       data-weather-mood={mood}
+      data-tod={tod}
     >
       <div className={cn("mirror-sky absolute inset-0", moodSkyClass(mood))} />
       <div className="mirror-aurora mirror-aurora-a absolute -left-1/4 top-[-20%] h-[75%] w-[85%] rounded-full" />
       <div className="mirror-aurora mirror-aurora-b absolute -right-[15%] top-[5%] h-[60%] w-[75%] rounded-full" />
       <div className="mirror-aurora mirror-aurora-c absolute bottom-[-20%] left-[10%] h-[55%] w-[75%] rounded-full" />
+      <div className="mirror-horizon absolute inset-x-0 bottom-0 h-[38%]" />
 
       {showSun ? <div className="weather-sun absolute" /> : null}
       {showClouds ? (
@@ -118,8 +132,8 @@ export function MirrorAtmosphere({
           showSun ? "opacity-25" : "opacity-80",
         )}
       />
-      <div className="mirror-grain absolute inset-0 opacity-[0.22]" />
-      <div className="absolute inset-0 bg-gradient-to-b from-black/20 via-black/45 to-black/80" />
+      <div className="mirror-grain absolute inset-0 opacity-[0.18]" />
+      <div className="absolute inset-0 bg-gradient-to-b from-black/10 via-black/20 to-black/50" />
     </div>
   );
 }

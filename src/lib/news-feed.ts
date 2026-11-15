@@ -31,7 +31,8 @@ function parseFeedItems(xml: string, sourceTag: string, perFeed: number) {
       tagValue(block, "pubDate") ?? tagValue(block, "dc:date");
     items.push({
       id: link || `${sourceTag}-${title}-${publishedAt ?? items.length}`,
-      title: `[${sourceTag}] ${title}`,
+      title,
+      tag: sourceTag,
       link,
       publishedAt,
     });

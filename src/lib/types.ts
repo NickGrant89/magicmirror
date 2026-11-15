@@ -43,6 +43,7 @@ export type WeatherDay = {
   summary: string;
   highC: number;
   lowC: number;
+  precipChancePct?: number;
 };
 
 export type WeatherSnapshot = {
@@ -54,6 +55,9 @@ export type WeatherSnapshot = {
   summary: string;
   highC: number;
   lowC: number;
+  humidityPct?: number;
+  precipChancePct?: number;
+  uvIndex?: number;
   /** Up to 7 daily forecasts (today first when live). */
   forecast?: WeatherDay[];
 };
@@ -119,6 +123,7 @@ export type NewsItem = {
   title: string;
   link?: string;
   publishedAt?: string;
+  tag?: string;
 };
 
 export type NewsPayload = {
