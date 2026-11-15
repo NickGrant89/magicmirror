@@ -118,7 +118,7 @@ export function MirrorBoard() {
               ))}
             </div>
             <p className="truncate text-[0.6rem] tracking-[0.14em] text-white/30 uppercase">
-              9″ Pi · v16.20 allday · {slideBadge(slides.slide)} ·{" "}
+              9″ Pi · v16.21 weather · {slideBadge(slides.slide)} ·{" "}
               {formatSlideRemain(slides.remainingMs)}
             </p>
           </div>
@@ -139,7 +139,7 @@ export function MirrorBoard() {
                   <div className="min-w-0 border-white/10 sm:border-l sm:pl-4">
                     <RadioPanel compact />
                   </div>
-                  <div className="grid grid-cols-2 gap-3 border-white/10 sm:border-l sm:pl-4">
+                  <div className="grid grid-cols-2 gap-3 border-white/10 sm:grid-cols-[1.25fr_0.85fr] sm:border-l sm:pl-4">
                     <WeatherPanel
                       data={weather.data}
                       loading={weather.loading}

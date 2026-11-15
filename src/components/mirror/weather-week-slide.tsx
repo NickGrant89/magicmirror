@@ -2,6 +2,7 @@
 
 import { Clock } from "@/components/mirror/clock";
 import { SectionLabel } from "@/components/mirror/section-label";
+import { WeatherGlyph } from "@/components/mirror/weather-glyph";
 import { weatherAccent, weatherBadge } from "@/lib/weather-codes";
 import type { WeatherPayload } from "@/lib/types";
 import { cn } from "@/lib/utils";
@@ -44,21 +45,67 @@ export function WeatherWeekSlide({
                 weatherAccent(weather.weatherCode),
               )}
             >
-              <div className="flex flex-wrap items-end gap-x-4 gap-y-1">
+              <div className="flex min-w-0 items-center gap-3">
+                <WeatherGlyph
+                  code={weather.weatherCode}
+                  className="size-11 sm:size-12"
+                />
                 <p className="font-display text-5xl leading-none text-white tabular-nums sm:text-6xl">
                   {weather.temperatureC}°
                 </p>
-                <div className="pb-0.5">
-                  <p className="font-display text-lg tracking-wide text-white/90">
+                <div className="min-w-0">
+                  <p className="truncate font-display text-lg tracking-wide text-white/90">
                     {weather.summary}
                   </p>
-                  <p className="text-sm text-white/50">
-                    {weather.locationLabel} · feels {weather.feelsLikeC}° · H{" "}
-                    {weather.highC}° · L {weather.lowC}° · wind{" "}
-                    {weather.windKph} km/h
+                  <p className="truncate text-sm text-white/50">
+                    {weather.locationLabel}
                   </p>
                 </div>
               </div>
+              <ul className="mt-2 flex flex-wrap gap-x-3 gap-y-1 text-sm text-white/70">
+                <li>
+                  Feels{" "}
+                  <span className="text-white/90 tabular-nums">
+                    {weather.feelsLikeC}°
+                  </span>
+                </li>
+                <li>
+                  H/L{" "}
+                  <span className="text-white/90 tabular-nums">
+                    {weather.highC}°/{weather.lowC}°
+                  </span>
+                </li>
+                <li>
+                  Wind{" "}
+                  <span className="text-white/90 tabular-nums">
+                    {weather.windKph} km/h
+                  </span>
+                </li>
+                {weather.precipChancePct != null ? (
+                  <li>
+                    Rain{" "}
+                    <span className="text-white/90 tabular-nums">
+                      {weather.precipChancePct}%
+                    </span>
+                  </li>
+                ) : null}
+                {weather.humidityPct != null ? (
+                  <li>
+                    Humidity{" "}
+                    <span className="text-white/90 tabular-nums">
+                      {weather.humidityPct}%
+                    </span>
+                  </li>
+                ) : null}
+                {weather.uvIndex != null ? (
+                  <li>
+                    UV{" "}
+                    <span className="text-white/90 tabular-nums">
+                      {weather.uvIndex}
+                    </span>
+                  </li>
+                ) : null}
+              </ul>
             </div>
           ) : (
             <p className="mt-2 text-sm text-white/40">
@@ -94,6 +141,11 @@ export function WeatherWeekSlide({
                 <p className="mt-2 text-center font-display text-[0.7rem] tracking-[0.12em] text-white/80 uppercase">
                   {weatherBadge(day.weatherCode)}
                 </p>
+                {day.precipChancePct != null ? (
+                  <p className="mt-0.5 text-center text-[0.6rem] text-white/40 tabular-nums">
+                    {day.precipChancePct}%
+                  </p>
+                ) : null}
                 <div className="mt-auto flex flex-col items-center gap-1 pt-3">
                   <div
                     className="w-1.5 rounded-full bg-gradient-to-t from-sky-300/80 to-amber-200/80"

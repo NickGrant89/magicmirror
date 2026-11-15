@@ -166,6 +166,9 @@ export function mockWeather(): WeatherSnapshot {
     summary: "Partly cloudy",
     highC: 15,
     lowC: 8,
+    humidityPct: 72,
+    precipChancePct: 35,
+    uvIndex: 2,
   };
 }
 
